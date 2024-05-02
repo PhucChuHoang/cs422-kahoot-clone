@@ -10,9 +10,11 @@
     "lint:fix": "next lint --fix",
     "lint:strict": "next lint '*/**/*.{js,jsx,ts,tsx}'",
     "prettier": "prettier --write */**/*.{js,jsx,json,ts,tsx,scss,css,md}",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.3",
+    "@types/react-redux": "^7.1.33",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "eslint-config-prettier": "^9.1.0",
@@ -23,15 +25,17 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-redux": "^9.1.2"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^18.3.1",
     "@types/react-dom": "^18",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.3",
     "postcss": "^8",
+    "redux-immutable-state-invariant": "^2.1.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
