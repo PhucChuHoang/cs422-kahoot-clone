@@ -8,6 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardContent, CardHeader } from './ui/card';
 import Image from 'next/image';
 import { Button } from './ui/button';
+import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
+import { ScorePopup } from './score_popup';
 
 export const LandingForm = () => {
     const [width, setWidth] = useState(0);
@@ -26,9 +28,16 @@ export const LandingForm = () => {
                     </CardContent>
                 </Card>
                 <div className="relative left-12">
-                    <Button className="bg-yellow-400 hover:bg-yellow-500 shadow-sm shadow-yellow-100">
-                        Start game
-                    </Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button className="bg-yellow-400 hover:bg-yellow-500 shadow-sm shadow-yellow-100">
+                                Start game
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <ScorePopup score={10} />
+                        </AlertDialogContent>
+                    </AlertDialog>
                     <Button className="bg-transparent text-yellow-200 hover:bg-transparent hover:text-yellow-300">know more</Button>
                 </div>
             </div>
