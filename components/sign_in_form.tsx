@@ -51,7 +51,7 @@ export const SignInForm = () => {
       <Card>
         <CardContent>
           <CardHeader className="items-center ">
-            <h1 className="text-2xl font-semibold">Sign In</h1>
+            <h1 className="text-2xl font-semibold text-primary">Login</h1>
           </CardHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -60,7 +60,9 @@ export const SignInForm = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem className="mb-4">
-                    <FormLabel className="text-base">Email</FormLabel>
+                    <FormLabel className="text-base text-primary">
+                      Email
+                    </FormLabel>
                     <FormControl>
                       <Input
                         className="text-base"
@@ -78,7 +80,9 @@ export const SignInForm = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base">Password</FormLabel>
+                    <FormLabel className="text-base text-primary">
+                      Password
+                    </FormLabel>
                     <FormControl>
                       <Input
                         className="text-base"
@@ -92,23 +96,25 @@ export const SignInForm = () => {
                 )}
               />
               <Button
-                className="mt-4 w-full items-center justify-center text-base"
+                className="mt-4 w-full items-center justify-center bg-primary text-base"
                 type="submit"
                 disabled={isSubmitting}
               >
                 {isSubmitting && (
                   <Spinner className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                Sign In
+                Login
               </Button>
             </form>
           </Form>
           <Button
-            className="mt-4 w-full items-center justify-center text-base"
+            className="mt-4 w-full items-center justify-center border-2 border-primary bg-background text-base"
             type="button"
             disabled={isSubmitting}
           >
-            <Link href="sign-up">Don&apos;t have an account? Sign up here</Link>
+            <Link href="sign-up" className="text-primary">
+              Don&apos;t have an account? Sign up here
+            </Link>
           </Button>
         </CardContent>
       </Card>
