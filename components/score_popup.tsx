@@ -2,7 +2,7 @@
 
 import * as popup from '@/components/ui/alert-dialog';
 
-export const ScorePopup = ({ score }) => {
+export const ScorePopup = ({ score }: { score: number }) => {
   return (
     <popup.AlertDialogContent>
       <popup.AlertDialogHeader className="bg-yellow-300">
