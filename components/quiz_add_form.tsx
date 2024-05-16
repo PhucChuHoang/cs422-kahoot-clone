@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from './ui/button';
+import { setQuiz, useAppSelector } from '@/lib';
+import { useDispatch } from 'react-redux';
 
 const QuizAddForm: React.FC = () => {
   const [question, setQuestion] = useState('');
   const [answers, setAnswers] = useState(['', '']);
+  const currentQuizDisplay = useAppSelector(
+    (state) => state.data.currentQuizDisplay,
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setQuestion(currentQuizDisplay?.question || '');
+    setAnswers(currentQuizDisplay?.answers || ['', '']);
+  }, [currentQuizDisplay]);
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuestion(e.target.value);
@@ -29,6 +40,22 @@ const QuizAddForm: React.FC = () => {
     setAnswers(newAnswers);
   };
 
+  const handleDeleteQuiz = () => (e: React.MouseEvent) => {
+    // TODO
+    e.preventDefault();
+    // Delete the quiz
+    // This could involve calling an API, updating the state, etc.
+    // dispatch(deleteQuiz(index));
+  };
+
+  const handleUpdateQuiz = () => (e: React.MouseEvent) => {
+    // TODO
+    e.preventDefault();
+    // Update the quiz
+    // This could involve calling an API, updating the state, etc.
+    // dispatch(updateQuiz(index, { question, answers }));
+  };
+
   const handleSubmitQuestion = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -40,12 +67,11 @@ const QuizAddForm: React.FC = () => {
 
     // Submit the question and answers
     // This could involve calling an API, updating the state, etc.
-    console.log('Question:', question);
-    console.log('Answers:', answers);
+    dispatch(setQuiz([{ question, answers }]));
 
     // Clear the form
     setQuestion('');
-    setAnswers(['', '', '', '']);
+    setAnswers(['', '']);
   };
 
   return (
@@ -67,7 +93,16 @@ const QuizAddForm: React.FC = () => {
       ))}
       <div className="button-quiz-form-container flex flex-col items-center ">
         <Button onClick={handleAddAnswer}>Add Answer</Button>
-        <Button type="submit">Submit</Button>
+        {currentQuizDisplay ? (
+          <div className="mt-4">
+            <Button onClick={handleUpdateQuiz()}>Update Quiz</Button>
+            <Button onClick={handleDeleteQuiz()}>Delete Quiz</Button>
+          </div>
+        ) : (
+          <Button type="submit" className="mt-4">
+            Submit
+          </Button>
+        )}
       </div>
     </form>
   );
