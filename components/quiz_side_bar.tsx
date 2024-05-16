@@ -22,7 +22,7 @@ export const QuizSideBar = () => {
 
   return (
     <div>
-      <h1 className="p-2 text-center text-2xl font-bold">List Quiz</h1>
+      <h1 className="p-2 text-center text-2xl font-bold">List Questions</h1>
       <Menu
         mode="inline"
         className="w-full"
@@ -39,7 +39,7 @@ export const QuizSideBar = () => {
         ))}
       </Menu>
       <Button onClick={handleAddQuizClick} className={'w-full font-bold'}>
-        Add Quiz
+        Add Question
       </Button>
     </div>
   );

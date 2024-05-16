@@ -1,3 +1,4 @@
+'use client';
 import { SignUpForm } from '@/components/sign_up_form';
 
 export default function SignInPage() {

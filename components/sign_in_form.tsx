@@ -17,30 +17,30 @@ import {
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 // import { Spinner } from '@nextui-org/spinner';
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 // import { signIn, useSession } from 'next-auth/react';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthenticationService } from '@/services/AuthenticationService';
+import { useDispatch } from 'react-redux';
+import { setLogin } from '@/lib';
 
 const formSchema = z.object({
-  email: z.string().email().min(1, 'Email is required'),
+  username: z.string().min(1, 'Username is required'),
   password: z.string().min(1, 'Password is required'),
 });
 
 export const SignInForm = () => {
   // When submit, change state to prevent multiple submissions
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const router = useRouter();
-
-  // if (session) {
-  //   // Route to main page if user is already signed in
-  //   // router.push('');
-  // }
+  const router = useRouter();
+  const authenticationService = AuthenticationService.getInstance();
+  const dispatch = useDispatch();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   });
@@ -49,8 +49,15 @@ export const SignInForm = () => {
     setIsSubmitting(true);
     // TODO: Sign in user
     // TODO: Redirect to dashboard
-    console.log('Sign in user');
-    console.log(data);
+    if (
+      await authenticationService.login({
+        username: data.username,
+        password: data.password,
+      })
+    ) {
+      dispatch(setLogin(true));
+      router.replace('/quiz');
+    }
   }
 
   return (
@@ -67,17 +74,17 @@ export const SignInForm = () => {
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
-                name="email"
+                name="username"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="text-base text-secondary">
-                      Email
+                      username
                     </FormLabel>
                     <FormControl>
                       <Input
                         className="text-base"
-                        id="email"
-                        type="email"
+                        id="username"
+                        type="username"
                         {...field}
                       />
                     </FormControl>

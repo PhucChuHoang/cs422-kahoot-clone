@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
@@ -15,11 +13,15 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-// import { Spinner } from '@nextui-org/spinner';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { AuthenticationService } from '@/services/AuthenticationService';
+import { setLogin } from '@/lib';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   email: z.string().email().min(1, 'Email is required'),
+  username: z.string().min(1, 'Username is required'),
   password: z.string().min(6, 'Password must be at least 6 characters long'),
   confirmPassword: z.string().min(6, 'Confirm password is required'),
 });
@@ -31,11 +33,15 @@ formSchema.refine((data) => data.password === data.confirmPassword, {
 
 export const SignUpForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
+  const authenticationService = AuthenticationService.getInstance();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
+      username: '',
       password: '',
       confirmPassword: '',
     },
@@ -43,10 +49,22 @@ export const SignUpForm = () => {
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    // TODO: Sign up user
-    // TODO: Redirect to dashboard or confirmation page
-    console.log('Sign up user');
-    console.log(data);
+    try {
+      const response = await authenticationService.register({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      });
+      if (!response) {
+        throw new Error('Failed to register');
+      }
+      dispatch(setLogin(true));
+      router.replace('/quiz');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -74,6 +92,26 @@ export const SignUpForm = () => {
                         className="text-base"
                         id="email"
                         type="email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel className="text-base text-secondary">
+                      Username
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="text-base"
+                        id="username"
+                        type="text"
                         {...field}
                       />
                     </FormControl>
