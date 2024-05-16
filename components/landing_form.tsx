@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from './ui/card';
 import Image from 'next/image';
 import { Button } from './ui/button';
 import { AlertDialog, AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
-import { ScorePopup } from './score_popup';
+import { InputPopup } from './input_pop_up';
 
 export const LandingForm = () => {
   return (
@@ -30,7 +30,7 @@ export const LandingForm = () => {
                 Start game
               </Button>
             </AlertDialogTrigger>
-            <ScorePopup score={10} />
+            <InputPopup />
           </AlertDialog>
           <Button className="bg-transparent text-yellow-200 hover:bg-transparent hover:text-yellow-300">
             know more

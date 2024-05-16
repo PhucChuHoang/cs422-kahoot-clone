@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Logo } from './logo';
+import { Logo } from './ui/logo';
 import { Button } from './ui/button';
 
 import Link from 'next/link';
