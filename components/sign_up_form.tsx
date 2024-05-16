@@ -15,7 +15,7 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { Spinner } from '@nextui-org/spinner';
+// import { Spinner } from '@nextui-org/spinner';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -126,9 +126,9 @@ export const SignUpForm = () => {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting && (
+                {/* {isSubmitting && (
                   <Spinner className="mr-2 h-4 w-4 animate-spin" />
-                )}
+                )} */}
                 Sign Up
               </Button>
             </form>

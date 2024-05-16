@@ -16,9 +16,11 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { Spinner } from '@nextui-org/spinner';
+// import { Spinner } from '@nextui-org/spinner';
 // import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+// import { signIn, useSession } from 'next-auth/react';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
 const formSchema = z.object({
   email: z.string().email().min(1, 'Email is required'),
@@ -29,6 +31,11 @@ export const SignInForm = () => {
   // When submit, change state to prevent multiple submissions
   const [isSubmitting, setIsSubmitting] = useState(false);
   // const router = useRouter();
+
+  // if (session) {
+  //   // Route to main page if user is already signed in
+  //   // router.push('');
+  // }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -103,9 +110,9 @@ export const SignInForm = () => {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting && (
+                {/* {isSubmitting && (
                   <Spinner className="mr-2 h-4 w-4 animate-spin" />
-                )}
+                )} */}
                 Login
               </Button>
             </form>
@@ -119,6 +126,29 @@ export const SignInForm = () => {
               Don&apos;t have an account? Sign up here
             </Link>
           </Button>
+          <GoogleOAuthProvider clientId="312565890120-vsl70e24537ll8vk4qivrb20colu0ob0.apps.googleusercontent.com">
+            <div className="relative mb-4 mt-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center justify-center">
+              <GoogleLogin
+                onSuccess={() => {
+                  console.log('Google login success');
+                  // do sth
+                }}
+                onError={() => {
+                  console.error('Google login error');
+                }}
+              />
+            </div>
+          </GoogleOAuthProvider>
         </CardContent>
       </Card>
     </div>
