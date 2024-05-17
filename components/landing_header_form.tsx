@@ -13,24 +13,14 @@ export const LandingHeaderForm = () => {
         <div className="flex h-full items-center justify-between">
           <Logo />
           <ul className="relative right-6 flex justify-end gap-x-6 font-bold text-gray-400 md:flex md:flex-grow">
-            <li>
-              <Link href="/help">
-                <p>How it works?</p>
-              </Link>
-            </li>
-            <li>
-              <Link href="/feature">
-                <p>Features</p>
-              </Link>
-            </li>
-            <li>
-              <Link href="/about">
-                <p>About us</p>
-              </Link>
-            </li>
+            <Link href="/sign-up">
+              <Button className="border-gray flex border-2 bg-transparent font-bold text-black hover:bg-gray-500 hover:text-white">
+                Sign Up
+              </Button>
+            </Link>
           </ul>
           <Link href="/login">
-            <Button className="flex border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500 ">
+            <Button className="flex border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500 hover:text-white">
               Login
             </Button>
           </Link>
