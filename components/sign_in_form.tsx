@@ -16,14 +16,15 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-// import { Spinner } from '@nextui-org/spinner';
+import { Spinner } from '@nextui-org/spinner';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-// import { signIn, useSession } from 'next-auth/react';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthenticationService } from '@/services/AuthenticationService';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '@/lib';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const formSchema = z.object({
   username: z.string().min(1, 'Username is required'),
@@ -46,22 +47,40 @@ export const SignInForm = () => {
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
+    if (isSubmitting) {
+      return;
+    }
+
     setIsSubmitting(true);
-    // TODO: Sign in user
-    // TODO: Redirect to dashboard
-    if (
+    try {
       await authenticationService.login({
         username: data.username,
         password: data.password,
-      })
-    ) {
+      });
       dispatch(setLogin(true));
       router.replace('/quiz');
+    } catch (error) {
+      toast.error('Login failed. Please check your username and password.', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          backgroundColor: '#f56565',
+          color: '#fff',
+        },
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   return (
     <div className="flex flex-col">
+      <ToastContainer />
       <p className="mb-10 text-center text-4xl font-semibold text-secondary">
         Welcome to Kahoot Clone
       </p>
@@ -117,9 +136,9 @@ export const SignInForm = () => {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {/* {isSubmitting && (
-                  <Spinner className="mr-2 h-4 w-4 animate-spin" />
-                )} */}
+                {isSubmitting && (
+                  <Spinner className="mr-2 h-4 w-4 animate-spin bg-secondary" />
+                )}
                 Login
               </Button>
             </form>

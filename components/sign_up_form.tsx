@@ -18,6 +18,9 @@ import { useDispatch } from 'react-redux';
 import { AuthenticationService } from '@/services/AuthenticationService';
 import { setLogin } from '@/lib';
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Spinner } from '@nextui-org/spinner';
 
 const formSchema = z.object({
   email: z.string().email().min(1, 'Email is required'),
@@ -61,7 +64,19 @@ export const SignUpForm = () => {
       dispatch(setLogin(true));
       router.replace('/quiz');
     } catch (error) {
-      console.error(error);
+      toast.error('Register failed. Please try again.', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          backgroundColor: '#f56565',
+          color: '#fff',
+        },
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -69,6 +84,7 @@ export const SignUpForm = () => {
 
   return (
     <div className="flex flex-col">
+      <ToastContainer />
       <p className="mb-10 text-center text-4xl font-semibold text-secondary">
         Create an Account
       </p>
@@ -164,9 +180,9 @@ export const SignUpForm = () => {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {/* {isSubmitting && (
-                  <Spinner className="mr-2 h-4 w-4 animate-spin" />
-                )} */}
+                {isSubmitting && (
+                  <Spinner className="mr-2 h-4 w-4 animate-spin bg-secondary" />
+                )}
                 Sign Up
               </Button>
             </form>
