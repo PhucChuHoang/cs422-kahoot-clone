@@ -4,12 +4,93 @@ interface DataState {
   currentQuizzes: Quiz[];
   currentQuizDisplay?: Quiz;
   isLogin: boolean;
+  listSession: QuizSession[];
 }
 
 const initialState: DataState = {
   currentQuizzes: [],
   currentQuizDisplay: undefined,
   isLogin: false,
+  listSession: [
+    {
+      id: '1',
+      name: 'Test Quiz',
+      creator_id: '1',
+      list_quizzes: [
+        {
+          question: 'What is the name of the capital city of Indonesia?',
+          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
+        },
+        {
+          question: 'What is the name of the capital city of Japan?',
+          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
+        },
+        {
+          question: 'What is the name of the capital city of South Korea?',
+          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
+        },
+      ],
+    },
+    {
+      id: '2',
+      name: 'Test Quiz 2',
+      creator_id: '1',
+      list_quizzes: [
+        {
+          question: 'What is the name of the capital city of Japan?',
+          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
+        },
+        {
+          question: 'What is the name of the capital city of sadkasl;kda;skld?',
+          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
+        },
+        {
+          question:
+            'What is the name of the capital city of as,dmja.sdlasjkdjas?',
+          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
+        },
+        {
+          question: 'What is the name of the capital city of Japan?',
+          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
+        },
+        {
+          question: 'What is the name of the capital city of sadkasl;kda;skld?',
+          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
+        },
+        {
+          question:
+            'What is the name of the capital city of as,dmja.sdlasjkdjas?',
+          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
+        },
+        {
+          question: 'What is the name of the capital city of Japan?',
+          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
+        },
+        {
+          question: 'What is the name of the capital city of sadkasl;kda;skld?',
+          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
+        },
+        {
+          question:
+            'What is the name of the capital city of as,dmja.sdlasjkdjas?',
+          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
+        },
+        {
+          question: 'What is the name of the capital city of Japan?',
+          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
+        },
+        {
+          question: 'What is the name of the capital city of sadkasl;kda;skld?',
+          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
+        },
+        {
+          question:
+            'What is the name of the capital city of as,dmja.sdlasjkdjas?',
+          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
+        },
+      ],
+    },
+  ],
 };
 
 const dataSlice = createSlice({
@@ -34,9 +115,17 @@ const dataSlice = createSlice({
     setLogin(state, action: PayloadAction<boolean>) {
       state.isLogin = action.payload;
     },
+    setListSession(state, action: PayloadAction<QuizSession[]>) {
+      state.listSession = action.payload;
+    },
   },
 });
 
-export const { setQuiz, removeQuiz, setCurrentQuizDisplay, setLogin } =
-  dataSlice.actions;
+export const {
+  setQuiz,
+  removeQuiz,
+  setCurrentQuizDisplay,
+  setLogin,
+  setListSession,
+} = dataSlice.actions;
 export const dataReducer = dataSlice.reducer;

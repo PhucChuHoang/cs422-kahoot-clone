@@ -62,7 +62,7 @@ export const SignUpForm = () => {
         throw new Error('Failed to register');
       }
       dispatch(setLogin(true));
-      router.replace('/quiz');
+      router.replace('/home');
     } catch (error) {
       toast.error('Register failed. Please try again.', {
         position: 'top-center',

@@ -23,3 +23,10 @@ type AuthenticationResponse = {
   email: string;
   id: number;
 };
+
+type QuizSession = {
+  id: string;
+  name: string;
+  creator_id: string;
+  list_quizzes: Quiz[];
+};

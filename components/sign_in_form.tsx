@@ -58,7 +58,7 @@ export const SignInForm = () => {
         password: data.password,
       });
       dispatch(setLogin(true));
-      router.replace('/quiz');
+      router.replace('/home');
     } catch (error) {
       toast.error('Login failed. Please check your username and password.', {
         position: 'top-center',
