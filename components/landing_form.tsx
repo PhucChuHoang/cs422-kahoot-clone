@@ -30,7 +30,7 @@ export const LandingForm = () => {
                 Start game
               </Button>
             </AlertDialogTrigger>
-            <InputPopup />
+            <InputPopup name="Enter name" roomID="Enter Room ID" />
           </AlertDialog>
           <Button className="bg-transparent text-yellow-200 hover:bg-transparent hover:text-yellow-300">
             know more

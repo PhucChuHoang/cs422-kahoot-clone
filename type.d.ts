@@ -28,3 +28,25 @@ type QuizSession = {
   creator_id: string;
   list_quizzes: Quiz[];
 };
+
+type QuizGameSessionConnectionRequest = {
+  session_code: string;
+  access_token: string;
+};
+
+type QuizGameSessionConnectionResponse = {
+  message: string;
+};
+
+type QuizGameSessionAnswerRequest = {
+  player_id: string;
+  session_code: string;
+  answer: string;
+  access_token: string;
+};
+
+type QuizGameSessionAnswerResponse = {
+  question: string;
+  answers: string[];
+  correct_answer: string;
+}

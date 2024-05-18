@@ -1,3 +1,5 @@
+'use client';
+
 import { SignInForm } from '@/components/sign_in_form';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
