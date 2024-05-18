@@ -1,120 +1,46 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface DataState {
-  currentQuizzes: Quiz[];
-  currentQuizDisplay?: Quiz;
-  listSession: QuizSession[];
+  currentQuestions: Question[];
+  currentQuestionDisplay?: Question;
+  currentQuizName?: string;
+  listSession?: QuizSession[];
 }
 
 const initialState: DataState = {
-  currentQuizzes: [],
-  currentQuizDisplay: undefined,
-  listSession: [
-    {
-      id: '1',
-      name: 'Test Quiz',
-      creator_id: '1',
-      list_quizzes: [
-        {
-          question: 'What is the name of the capital city of Indonesia?',
-          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
-        },
-        {
-          question: 'What is the name of the capital city of Japan?',
-          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
-        },
-        {
-          question: 'What is the name of the capital city of South Korea?',
-          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
-        },
-      ],
-    },
-    {
-      id: '2',
-      name: 'Test Quiz 2',
-      creator_id: '1',
-      list_quizzes: [
-        {
-          question: 'What is the name of the capital city of Japan?',
-          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
-        },
-        {
-          question: 'What is the name of the capital city of sadkasl;kda;skld?',
-          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
-        },
-        {
-          question:
-            'What is the name of the capital city of as,dmja.sdlasjkdjas?',
-          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
-        },
-        {
-          question: 'What is the name of the capital city of Japan?',
-          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
-        },
-        {
-          question: 'What is the name of the capital city of sadkasl;kda;skld?',
-          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
-        },
-        {
-          question:
-            'What is the name of the capital city of as,dmja.sdlasjkdjas?',
-          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
-        },
-        {
-          question: 'What is the name of the capital city of Japan?',
-          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
-        },
-        {
-          question: 'What is the name of the capital city of sadkasl;kda;skld?',
-          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
-        },
-        {
-          question:
-            'What is the name of the capital city of as,dmja.sdlasjkdjas?',
-          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
-        },
-        {
-          question: 'What is the name of the capital city of Japan?',
-          answers: ['Jakarta', 'Bandung', 'Surabaya', 'Bali'],
-        },
-        {
-          question: 'What is the name of the capital city of sadkasl;kda;skld?',
-          answers: ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido'],
-        },
-        {
-          question:
-            'What is the name of the capital city of as,dmja.sdlasjkdjas?',
-          answers: ['Seoul', 'Busan', 'Incheon', 'Jeju'],
-        },
-      ],
-    },
-  ],
+  currentQuestions: [],
+  currentQuestionDisplay: undefined,
+  currentQuizName: undefined,
+  listSession: undefined,
 };
 
 const dataSlice = createSlice({
   name: 'data',
   initialState,
   reducers: {
-    setQuestions(state, action: PayloadAction<Quiz[]>) {
-      state.currentQuizzes = action.payload;
+    setQuestions(state, action: PayloadAction<Question[]>) {
+      state.currentQuestions = action.payload;
     },
-    addQuestion(state, action: PayloadAction<Quiz>) {
-      state.currentQuizzes.unshift(action.payload);
+    addQuestion(state, action: PayloadAction<Question>) {
+      state.currentQuestions.unshift(action.payload);
     },
-    removeQuiz(state, action: PayloadAction<number>) {
-      state.currentQuizzes = state.currentQuizzes.filter(
+    removeQuestion(state, action: PayloadAction<number>) {
+      state.currentQuestions = state.currentQuestions.filter(
         (_, index) => index !== action.payload,
       );
     },
-    setCurrentQuizDisplay(state, action: PayloadAction<number>) {
+    setCurrentQuestionDisplay(state, action: PayloadAction<number>) {
       if (action.payload === -1) {
-        state.currentQuizDisplay = undefined;
+        state.currentQuestionDisplay = undefined;
         return;
       }
-      state.currentQuizDisplay = state.currentQuizzes[action.payload];
+      state.currentQuestionDisplay = state.currentQuestions[action.payload];
     },
     setListSession(state, action: PayloadAction<QuizSession[]>) {
       state.listSession = action.payload;
+    },
+    setCurrentQuizName(state, action: PayloadAction<string>) {
+      state.currentQuizName = action.payload;
     },
   },
 });
@@ -122,8 +48,9 @@ const dataSlice = createSlice({
 export const {
   setQuestions,
   addQuestion,
-  removeQuiz,
-  setCurrentQuizDisplay,
+  removeQuestion,
+  setCurrentQuestionDisplay,
   setListSession,
+  setCurrentQuizName,
 } = dataSlice.actions;
 export const dataReducer = dataSlice.reducer;

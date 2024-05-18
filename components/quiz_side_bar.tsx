@@ -1,28 +1,68 @@
 import { useState } from 'react';
-import { useAppSelector, useAppDispatch } from '@/lib';
+import { useAppSelector, useAppDispatch, setQuestions } from '@/lib';
 import { Menu } from 'antd';
-import { setCurrentQuizDisplay } from '@/lib';
+import { setCurrentQuestionDisplay } from '@/lib';
 import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
+import { QuizService } from '@/services/QuizService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const QuizSideBar = () => {
   const dispatch = useAppDispatch();
-  const currentQuizzes = useAppSelector((state) => state.data.currentQuizzes);
+  const currentQuestions = useAppSelector(
+    (state) => state.data.currentQuestions,
+  );
+  const currentQuizName = useAppSelector((state) => state.data.currentQuizName);
+  const router = useRouter();
+  const quizService = QuizService.getInstance();
 
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
+  const handleCreateQuiz = () => {
+    const request: QuizRequest = {
+      title: currentQuizName,
+      questions: currentQuestions,
+    };
+    try {
+      quizService.createQuiz(request);
+      dispatch(setCurrentQuestionDisplay(-1));
+      dispatch(setQuestions([]));
+    } catch (error) {
+      toast.error('Login failed. Please check your username and password.', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          backgroundColor: '#f56565',
+          color: '#fff',
+        },
+      });
+    }
+    router.push('/home');
+  };
+
   const handleMenuClick = (index: number) => {
     setSelectedKey(index.toString());
-    dispatch(setCurrentQuizDisplay(index));
+    dispatch(setCurrentQuestionDisplay(index));
   };
 
   const handleAddQuizClick = () => {
     setSelectedKey(null);
-    dispatch(setCurrentQuizDisplay(-1));
+    dispatch(setCurrentQuestionDisplay(-1));
   };
 
   return (
     <div>
-      <h1 className="p-2 text-center text-2xl font-bold">List Questions</h1>
+      <ToastContainer />
+      <h1 className="p-2 text-center text-2xl font-bold">{currentQuizName}</h1>
+      <Button onClick={handleCreateQuiz} className={'mb-2 w-full font-bold'}>
+        Create Quiz
+      </Button>
       <Button onClick={handleAddQuizClick} className={'w-full font-bold'}>
         Add Question
       </Button>
@@ -31,13 +71,13 @@ export const QuizSideBar = () => {
         className="w-full"
         selectedKeys={selectedKey ? [selectedKey] : []}
       >
-        {currentQuizzes.map((quiz: Quiz, index: number) => (
+        {currentQuestions.map((quiz: Question, index: number) => (
           <Menu.Item
             key={index}
             onClick={() => handleMenuClick(index)}
             className="font-bold"
           >
-            {quiz.question}
+            {quiz.text}
           </Menu.Item>
         ))}
       </Menu>

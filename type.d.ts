@@ -1,7 +1,16 @@
 /* eslint-disable no-unused-vars */
-type Quiz = {
-  question: string;
-  answers: string[];
+type Question = {
+  id?: string;
+  quiz_id?: string;
+  text: string;
+  options: QuestionAnswer[];
+};
+
+type QuestionAnswer = {
+  id?: string;
+  question_id?: string;
+  text: string;
+  is_correct: boolean;
 };
 
 type RecordValue = string | Blob | File | number | boolean | null;
@@ -24,9 +33,22 @@ type AuthenticationResponse = {
 
 type QuizSession = {
   id: string;
-  name: string;
-  creator_id: string;
-  list_quizzes: Quiz[];
+  title: string;
+  user_id: string;
+  list_quizzes: Question[];
+};
+
+type QuizRequest = {
+  title?: string;
+  questions?: Question[];
+};
+
+type QuizResponse = {
+  id: string;
+  user_id: string;
+  title: string;
+  created_at: string;
+  questions: Question[];
 };
 
 type QuizGameSessionConnectionRequest = {

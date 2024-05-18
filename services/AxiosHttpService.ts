@@ -18,13 +18,31 @@ class AxiosHttpService implements HttpService {
     url: string,
     data?: U,
   ): Promise<T> {
-    const formData = new FormData();
-    Object.entries(data ?? {}).forEach(([key, value]) => {
-      formData.append(key, value?.toString() ?? '');
-    });
-
     try {
-      const response = await axiosInstance.post<T>(url, formData);
+      const response = await axiosInstance.post<T>(url, data);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      throw axiosError;
+    }
+  }
+
+  async put<T, U extends Record<string, unknown> | undefined>(
+    url: string,
+    data?: U,
+  ): Promise<T> {
+    try {
+      const response = await axiosInstance.put<T>(url, data);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      throw axiosError;
+    }
+  }
+
+  async delete<T>(url: string): Promise<T> {
+    try {
+      const response = await axiosInstance.delete<T>(url);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
