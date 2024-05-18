@@ -23,6 +23,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { isTokenExpired } from '@/lib/utils';
 
 export default function Home() {
   const listSession = useAppSelector((state) => state.data.listSession);
@@ -42,9 +43,9 @@ export default function Home() {
   }, [listSession]);
 
   useEffect(() => {
-    // Check if the username cookie is not set
-    if (!Cookies.get('token')) {
-      // Redirect to the login page
+    const token = Cookies.get('token');
+    if (!token || isTokenExpired(token)) {
+      Cookies.remove('token');
       router.replace('/login');
     }
   });

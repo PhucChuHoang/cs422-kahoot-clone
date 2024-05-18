@@ -13,7 +13,7 @@ const QuizAddForm: React.FC = () => {
   const [currentQuestion, setCurrentQuestion] = useState<Question>({
     text: '',
     options: [
-      { text: '', is_correct: false },
+      { text: '', is_correct: true },
       { text: '', is_correct: false },
     ],
   });
@@ -33,7 +33,7 @@ const QuizAddForm: React.FC = () => {
       setCurrentQuestion({
         text: '',
         options: [
-          { text: '', is_correct: false },
+          { text: '', is_correct: true },
           { text: '', is_correct: false },
         ],
       });
@@ -76,12 +76,12 @@ const QuizAddForm: React.FC = () => {
     }));
   };
 
-  const handleCorrectAnswerChange = (index: number, isCorrect: boolean) => {
+  const handleCorrectAnswerChange = (index: number) => {
     setCurrentQuestion((prev) => ({
       ...prev,
       options: prev.options.map((option, i) => ({
         ...option,
-        is_correct: i === index ? isCorrect : option.is_correct,
+        is_correct: i === index,
       })),
     }));
   };
@@ -146,7 +146,7 @@ const QuizAddForm: React.FC = () => {
             className="ml-2 mr-2"
             type="checkbox"
             checked={answer.is_correct}
-            onChange={(e) => handleCorrectAnswerChange(index, e.target.checked)}
+            onChange={() => handleCorrectAnswerChange(index)}
             style={{ transform: 'scale(1.5)' }}
           />
           {currentQuestion.options.length > 2 && (
