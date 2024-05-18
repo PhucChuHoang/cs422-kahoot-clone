@@ -7,12 +7,17 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import Cookies from 'js-cookie';
 
 export default function Home() {
   const listSession = useAppSelector((state) => state.data.listSession);
   const [selectedKey, setSelectedKey] = useState<string>('0');
   const router = useRouter();
   const dispatch = useDispatch();
+
+  if (!Cookies.get('username')) {
+    router.replace('/login');
+  }
 
   const handleEditQuiz = () => {
     const currentQuiz = listSession[parseInt(selectedKey)];

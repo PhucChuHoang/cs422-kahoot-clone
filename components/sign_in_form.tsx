@@ -24,6 +24,7 @@ import { AuthenticationService } from '@/services/AuthenticationService';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '@/lib';
 import { ToastContainer, toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 import 'react-toastify/dist/ReactToastify.css';
 
 const formSchema = z.object({
@@ -57,6 +58,7 @@ export const SignInForm = () => {
         username: data.username,
         password: data.password,
       });
+      Cookies.set('username', data.username, { expires: 7 });
       dispatch(setLogin(true));
       router.replace('/home');
     } catch (error) {

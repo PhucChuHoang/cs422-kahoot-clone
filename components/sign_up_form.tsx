@@ -21,6 +21,7 @@ import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Spinner } from '@nextui-org/spinner';
+import Cookies from 'js-cookie';
 
 const formSchema = z.object({
   email: z.string().email().min(1, 'Email is required'),
@@ -53,14 +54,12 @@ export const SignUpForm = () => {
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const response = await authenticationService.register({
+      await authenticationService.register({
         username: data.username,
         email: data.email,
         password: data.password,
       });
-      if (!response) {
-        throw new Error('Failed to register');
-      }
+      Cookies.set('username', data.username, { expires: 7 });
       dispatch(setLogin(true));
       router.replace('/home');
     } catch (error) {
