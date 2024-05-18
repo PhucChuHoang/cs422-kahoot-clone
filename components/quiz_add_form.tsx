@@ -1,102 +1,177 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from './ui/button';
-import { addQuestion, useAppSelector } from '@/lib';
+import {
+  useAppSelector,
+  addQuestion,
+  removeQuestion,
+  setQuestions,
+} from '@/lib';
 import { useDispatch } from 'react-redux';
 
 const QuizAddForm: React.FC = () => {
-  const [question, setQuestion] = useState('');
-  const [answers, setAnswers] = useState(['', '']);
-  const currentQuizDisplay = useAppSelector(
-    (state) => state.data.currentQuizDisplay,
+  const [currentQuestion, setCurrentQuestion] = useState<Question>({
+    text: '',
+    options: [
+      { text: '', is_correct: false },
+      { text: '', is_correct: false },
+    ],
+  });
+
+  const currentQuestionDisplay = useAppSelector(
+    (state) => state.data.currentQuestionDisplay,
+  );
+  const currentQuestions = useAppSelector(
+    (state) => state.data.currentQuestions,
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setQuestion(currentQuizDisplay?.question || '');
-    setAnswers(currentQuizDisplay?.answers || ['', '']);
-  }, [currentQuizDisplay]);
+    if (currentQuestionDisplay) {
+      setCurrentQuestion(currentQuestionDisplay);
+    } else {
+      setCurrentQuestion({
+        text: '',
+        options: [
+          { text: '', is_correct: false },
+          { text: '', is_correct: false },
+        ],
+      });
+    }
+  }, [currentQuestionDisplay]);
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuestion(e.target.value);
+    setCurrentQuestion((prev) => ({
+      ...prev,
+      text: e.target.value,
+    }));
   };
 
   const handleAnswerChange =
     (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newAnswers = [...answers];
-      newAnswers[index] = e.target.value;
-      setAnswers(newAnswers);
+      const newOptions = currentQuestion.options.map((option, i) =>
+        i === index ? { ...option, text: e.target.value } : option,
+      );
+      setCurrentQuestion((prev) => ({
+        ...prev,
+        options: newOptions,
+      }));
     };
 
   const handleAddAnswer = (e: React.MouseEvent) => {
     e.preventDefault();
-    setAnswers([...answers, '']);
+    if (currentQuestion.options.length < 4) {
+      setCurrentQuestion((prev) => ({
+        ...prev,
+        options: [...prev.options, { text: '', is_correct: false }],
+      }));
+    }
   };
 
   const handleDeleteAnswer = (index: number) => (e: React.MouseEvent) => {
     e.preventDefault();
-    const newAnswers = [...answers];
-    newAnswers.splice(index, 1);
-    setAnswers(newAnswers);
+    setCurrentQuestion((prev) => ({
+      ...prev,
+      options: prev.options.filter((_, i) => i !== index),
+    }));
   };
 
-  const handleDeleteQuiz = () => (e: React.MouseEvent) => {
-    // TODO
-    e.preventDefault();
-    // Delete the quiz
-    // This could involve calling an API, updating the state, etc.
-    // dispatch(deleteQuiz(index));
-  };
-
-  const handleUpdateQuiz = () => (e: React.MouseEvent) => {
-    // TODO
-    e.preventDefault();
-    // Update the quiz
-    // This could involve calling an API, updating the state, etc.
-    // dispatch(updateQuiz(index, { question, answers }));
+  const handleCorrectAnswerChange = (index: number, isCorrect: boolean) => {
+    setCurrentQuestion((prev) => ({
+      ...prev,
+      options: prev.options.map((option, i) => ({
+        ...option,
+        is_correct: i === index ? isCorrect : option.is_correct,
+      })),
+    }));
   };
 
   const handleSubmitQuestion = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate the question and answers
-    if (!question || answers.some((answer) => !answer)) {
+    if (
+      !currentQuestion.text ||
+      currentQuestion.options.some((option) => !option.text)
+    ) {
       alert('Please fill out all fields.');
       return;
     }
 
     // Submit the question and answers
-    // This could involve calling an API, updating the state, etc.
-    dispatch(addQuestion({ question, answers }));
+    dispatch(addQuestion(currentQuestion));
 
     // Clear the form
-    setQuestion('');
-    setAnswers(['', '']);
+    setCurrentQuestion({
+      text: '',
+      options: [
+        { text: '', is_correct: false },
+        { text: '', is_correct: false },
+      ],
+    });
+  };
+
+  const handleUpdateQuiz = (e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch(
+      setQuestions(
+        currentQuestions.map((q) =>
+          q.text === currentQuestionDisplay?.text ? currentQuestion : q,
+        ),
+      ),
+    );
+  };
+
+  const handleDeleteQuiz = (index: number) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch(removeQuestion(index));
   };
 
   return (
     <form onSubmit={handleSubmitQuestion}>
       <Input
-        value={question}
+        value={currentQuestion.text}
         onChange={handleQuestionChange}
         placeholder="Question"
+        className="mt-2"
       />
-      {answers.map((answer, index) => (
+      {currentQuestion.options.map((answer, index) => (
         <div key={index} className="mb-2 mt-2 flex items-center">
           <Input
-            value={answer}
+            value={answer.text}
             onChange={handleAnswerChange(index)}
             placeholder={`Answer ${index + 1}`}
           />
-          <Button onClick={handleDeleteAnswer(index)}>Delete</Button>
+          <input
+            className="ml-2 mr-2"
+            type="checkbox"
+            checked={answer.is_correct}
+            onChange={(e) => handleCorrectAnswerChange(index, e.target.checked)}
+            style={{ transform: 'scale(1.5)' }}
+          />
+          {currentQuestion.options.length > 2 && (
+            <Button onClick={handleDeleteAnswer(index)}>Delete</Button>
+          )}
         </div>
       ))}
       <div className="button-quiz-form-container flex flex-col items-center ">
-        <Button onClick={handleAddAnswer}>Add Answer</Button>
-        {currentQuizDisplay ? (
+        {currentQuestion.options.length < 4 && (
+          <Button onClick={handleAddAnswer}>Add Answer</Button>
+        )}
+        {currentQuestionDisplay ? (
           <div className="mt-4">
-            <Button onClick={handleUpdateQuiz()}>Save</Button>
-            <Button onClick={handleDeleteQuiz()}>Delete Question</Button>
+            <Button onClick={handleUpdateQuiz} className="mr-2">
+              Save
+            </Button>
+            <Button
+              onClick={handleDeleteQuiz(
+                currentQuestions.findIndex(
+                  (q) => q.text === currentQuestionDisplay?.text,
+                ),
+              )}
+            >
+              Delete Question
+            </Button>
           </div>
         ) : (
           <Button type="submit" className="mt-4">

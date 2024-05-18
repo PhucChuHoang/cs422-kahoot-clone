@@ -1,19 +1,43 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import UserDisplay from '@/components/user_display';
-import { setCurrentQuizDisplay, setQuestions, useAppSelector } from '@/lib';
+import {
+  setCurrentQuestionDisplay,
+  setCurrentQuizName,
+  setQuestions,
+  useAppSelector,
+} from '@/lib';
 import { Menu } from 'antd';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 
 export default function Home() {
   const listSession = useAppSelector((state) => state.data.listSession);
+  const [quizName, setQuizName] = useState('');
+  const [error, setError] = useState('');
   const [selectedKey, setSelectedKey] = useState<string>('0');
+  const [hasSession, setHasSession] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    //TODO: Initialize the list of sessions
+    if (listSession) {
+      setHasSession(true);
+    }
+  }, [listSession]);
 
   useEffect(() => {
     // Check if the username cookie is not set
@@ -23,11 +47,26 @@ export default function Home() {
     }
   });
 
-  const handleEditQuiz = () => {
-    const currentQuiz = listSession[parseInt(selectedKey)];
-    dispatch(setQuestions(currentQuiz.list_quizzes));
-    dispatch(setCurrentQuizDisplay(-1));
+  const handleCreateQuiz = () => {
+    if (!quizName.trim()) {
+      setError('Quiz name is required');
+      return;
+    }
+
+    setError('');
+    dispatch(setCurrentQuestionDisplay(-1));
+    dispatch(setCurrentQuizName(quizName));
     router.push('/home/quiz');
+  };
+
+  const handleEditQuiz = () => {
+    if (listSession) {
+      const currentQuiz = listSession[parseInt(selectedKey)];
+      dispatch(setQuestions(currentQuiz.list_quizzes));
+      dispatch(setCurrentQuestionDisplay(-1));
+      dispatch(setCurrentQuizName(currentQuiz.title));
+      router.push('/home/quiz');
+    }
   };
 
   return (
@@ -40,68 +79,84 @@ export default function Home() {
       </div>
       <div className="h-full overflow-auto pr-2">
         <h1 className="pr-2 text-2xl font-bold">List Available Sessions</h1>
-        <Link href="/home/quiz">
-          <Button
-            className="w-full"
-            onClick={() => {
-              dispatch(setCurrentQuizDisplay(-1));
-              dispatch(setQuestions([]));
-            }}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="w-full">Create new quiz</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create new quiz</DialogTitle>
+              <DialogDescription>
+                Please enter the name of the quiz
+              </DialogDescription>
+            </DialogHeader>
+            <Input
+              placeholder="Quiz name"
+              onChange={(e) => setQuizName(e.target.value)}
+            />
+            {error && (
+              <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>
+            )}
+            <DialogFooter>
+              <Button onClick={handleCreateQuiz}>Create</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        {hasSession && listSession && (
+          <Menu
+            defaultSelectedKeys={[selectedKey]}
+            onSelect={({ key }) => setSelectedKey(key)}
           >
-            Add Session
-          </Button>
-        </Link>
-        <Menu
-          defaultSelectedKeys={[selectedKey]}
-          onSelect={({ key }) => setSelectedKey(key)}
-        >
-          {listSession.map((session: QuizSession, index: number) => (
-            <Menu.Item key={index.toString()} className="font-bold">
-              {session.name}
-            </Menu.Item>
-          ))}
-        </Menu>
+            {listSession.map((session: QuizSession, index: number) => (
+              <Menu.Item key={index.toString()} className="font-bold">
+                {session.title}
+              </Menu.Item>
+            ))}
+          </Menu>
+        )}
       </div>
-      <div className="h-full flex-grow overflow-auto">
-        <div className="flex h-full flex-col pl-2">
-          <div className="flex w-full flex-row items-center justify-between">
-            <p className="text-2xl font-bold">
-              Session Name: {listSession[parseInt(selectedKey)].name}
-            </p>
-            <div>
-              <Button
-                className="mr-2 border-2 border-primary bg-background"
-                onClick={handleEditQuiz}
-              >
-                Edit Quiz
-              </Button>
-              <Button className="mr-2">Start Quiz</Button>
+      {hasSession && listSession && (
+        <div className="h-full flex-grow overflow-auto">
+          <div className="flex h-full flex-col pl-2">
+            <div className="flex w-full flex-row items-center justify-between">
+              <p className="text-2xl font-bold">
+                Session Name: {listSession[parseInt(selectedKey)].title}
+              </p>
+              <div>
+                <Button
+                  className="mr-2 border-2 border-primary bg-background"
+                  onClick={handleEditQuiz}
+                >
+                  Edit Quiz
+                </Button>
+                <Button className="mr-2">Start Quiz</Button>
+              </div>
+            </div>
+            <div className="flex-grow overflow-auto">
+              {listSession[parseInt(selectedKey)].list_quizzes.map(
+                (quiz: Question, index: number) => {
+                  return (
+                    <div key={index} className="border-b-2 border-gray-200 p-2">
+                      <p className="text-2xl font-bold">
+                        Question: {quiz.text}
+                      </p>
+                      {quiz.options.map((answer: QuestionAnswer, index) => {
+                        return (
+                          <div key={index} className="p-2">
+                            <p className="font-bold">
+                              Answer {index + 1}: {answer.text}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                },
+              )}
             </div>
           </div>
-          <div className="flex-grow overflow-auto">
-            {listSession[parseInt(selectedKey)].list_quizzes.map(
-              (quiz: Quiz, index: number) => {
-                return (
-                  <div key={index} className="border-b-2 border-gray-200 p-2">
-                    <p className="text-2xl font-bold">
-                      Question: {quiz.question}
-                    </p>
-                    {quiz.answers.map((answer: string, index: number) => {
-                      return (
-                        <div key={index} className="p-2">
-                          <p className="font-bold">
-                            Answer {index + 1}: {answer}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              },
-            )}
-          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
