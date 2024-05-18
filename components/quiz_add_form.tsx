@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from './ui/button';
-import { setQuiz, useAppSelector } from '@/lib';
+import { addQuestion, useAppSelector } from '@/lib';
 import { useDispatch } from 'react-redux';
 
 const QuizAddForm: React.FC = () => {
@@ -67,7 +67,7 @@ const QuizAddForm: React.FC = () => {
 
     // Submit the question and answers
     // This could involve calling an API, updating the state, etc.
-    dispatch(setQuiz([{ question, answers }]));
+    dispatch(addQuestion({ question, answers }));
 
     // Clear the form
     setQuestion('');
@@ -95,12 +95,12 @@ const QuizAddForm: React.FC = () => {
         <Button onClick={handleAddAnswer}>Add Answer</Button>
         {currentQuizDisplay ? (
           <div className="mt-4">
-            <Button onClick={handleUpdateQuiz()}>Update Quiz</Button>
-            <Button onClick={handleDeleteQuiz()}>Delete Quiz</Button>
+            <Button onClick={handleUpdateQuiz()}>Save</Button>
+            <Button onClick={handleDeleteQuiz()}>Delete Question</Button>
           </div>
         ) : (
           <Button type="submit" className="mt-4">
-            Submit
+            Save
           </Button>
         )}
       </div>

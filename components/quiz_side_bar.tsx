@@ -23,6 +23,9 @@ export const QuizSideBar = () => {
   return (
     <div>
       <h1 className="p-2 text-center text-2xl font-bold">List Questions</h1>
+      <Button onClick={handleAddQuizClick} className={'w-full font-bold'}>
+        Add Question
+      </Button>
       <Menu
         mode="inline"
         className="w-full"
@@ -38,9 +41,6 @@ export const QuizSideBar = () => {
           </Menu.Item>
         ))}
       </Menu>
-      <Button onClick={handleAddQuizClick} className={'w-full font-bold'}>
-        Add Question
-      </Button>
     </div>
   );
 };

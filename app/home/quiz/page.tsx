@@ -1,6 +1,6 @@
 'use client';
 import QuizAddForm from '@/components/quiz_add_form';
-import '../globals.css';
+import '../../globals.css';
 import { QuizSideBar } from '@/components/quiz_side_bar';
 
 export default function QuizPage() {

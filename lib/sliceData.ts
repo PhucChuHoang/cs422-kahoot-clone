@@ -97,8 +97,11 @@ const dataSlice = createSlice({
   name: 'data',
   initialState,
   reducers: {
-    setQuiz(state, action: PayloadAction<Quiz[]>) {
-      state.currentQuizzes = [...state.currentQuizzes, ...action.payload];
+    setQuestions(state, action: PayloadAction<Quiz[]>) {
+      state.currentQuizzes = action.payload;
+    },
+    addQuestion(state, action: PayloadAction<Quiz>) {
+      state.currentQuizzes.unshift(action.payload);
     },
     removeQuiz(state, action: PayloadAction<number>) {
       state.currentQuizzes = state.currentQuizzes.filter(
@@ -122,7 +125,8 @@ const dataSlice = createSlice({
 });
 
 export const {
-  setQuiz,
+  setQuestions,
+  addQuestion,
   removeQuiz,
   setCurrentQuizDisplay,
   setLogin,
