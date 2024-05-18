@@ -3,14 +3,17 @@ import { SignInForm } from '@/components/sign_in_form';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
+import { isTokenExpired } from '@/lib/utils';
 
 export default function SignInPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (Cookies.get('token')) {
+    const token = Cookies.get('token');
+    if (token && !isTokenExpired(token)) {
       router.replace('/home');
     }
+    Cookies.remove('token');
   });
 
   return (

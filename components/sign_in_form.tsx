@@ -58,7 +58,7 @@ export const SignInForm = () => {
         username: data.username,
         password: data.password,
       });
-      Cookies.set('token', response, { expires: 7 });
+      Cookies.set('token', response, { expires: 30 });
       dispatch(setLogin(true));
       dispatch(setToken(response));
       router.replace('/home');

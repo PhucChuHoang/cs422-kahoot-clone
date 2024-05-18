@@ -18,13 +18,8 @@ class AxiosHttpService implements HttpService {
     url: string,
     data?: U,
   ): Promise<T> {
-    const formData = new FormData();
-    Object.entries(data ?? {}).forEach(([key, value]) => {
-      formData.append(key, value?.toString() ?? '');
-    });
-
     try {
-      const response = await axiosInstance.post<T>(url, formData);
+      const response = await axiosInstance.post<T>(url, data);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -36,13 +31,8 @@ class AxiosHttpService implements HttpService {
     url: string,
     data?: U,
   ): Promise<T> {
-    const formData = new FormData();
-    Object.entries(data ?? {}).forEach(([key, value]) => {
-      formData.append(key, value?.toString() ?? '');
-    });
-
     try {
-      const response = await axiosInstance.put<T>(url, formData);
+      const response = await axiosInstance.put<T>(url, data);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
