@@ -18,10 +18,8 @@ type AuthenticationRequest = {
 };
 
 type AuthenticationResponse = {
-  username: string;
-  password_hash: string;
-  email: string;
-  id: number;
+  status: number;
+  access_token: string;
 };
 
 type QuizSession = {

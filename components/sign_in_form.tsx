@@ -22,7 +22,7 @@ import Link from 'next/link';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthenticationService } from '@/services/AuthenticationService';
 import { useDispatch } from 'react-redux';
-import { setLogin } from '@/lib';
+import { setLogin, setToken } from '@/lib';
 import { ToastContainer, toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import 'react-toastify/dist/ReactToastify.css';
@@ -54,12 +54,13 @@ export const SignInForm = () => {
 
     setIsSubmitting(true);
     try {
-      await authenticationService.login({
+      const response = await authenticationService.login({
         username: data.username,
         password: data.password,
       });
-      Cookies.set('username', data.username, { expires: 7 });
+      Cookies.set('token', response, { expires: 7 });
       dispatch(setLogin(true));
+      dispatch(setToken(response));
       router.replace('/home');
     } catch (error) {
       toast.error('Login failed. Please check your username and password.', {

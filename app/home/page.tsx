@@ -5,7 +5,7 @@ import { setCurrentQuizDisplay, setQuestions, useAppSelector } from '@/lib';
 import { Menu } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie';
 
@@ -15,9 +15,13 @@ export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  if (!Cookies.get('username')) {
-    router.replace('/login');
-  }
+  useEffect(() => {
+    // Check if the username cookie is not set
+    if (!Cookies.get('token')) {
+      // Redirect to the login page
+      router.replace('/login');
+    }
+  });
 
   const handleEditQuiz = () => {
     const currentQuiz = listSession[parseInt(selectedKey)];

@@ -1,4 +1,5 @@
 import { axiosInstance } from '../lib/utils';
+import { AxiosError } from 'axios';
 
 class AxiosHttpService implements HttpService {
   private static instance: AxiosHttpService;
@@ -22,8 +23,13 @@ class AxiosHttpService implements HttpService {
       formData.append(key, value?.toString() ?? '');
     });
 
-    const response = await axiosInstance.post<T>(url, formData);
-    return response.data;
+    try {
+      const response = await axiosInstance.post<T>(url, formData);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      throw axiosError;
+    }
   }
 }
 

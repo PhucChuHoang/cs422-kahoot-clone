@@ -16,7 +16,7 @@ import { Button } from './ui/button';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { AuthenticationService } from '@/services/AuthenticationService';
-import { setLogin } from '@/lib';
+import { setLogin, setToken } from '@/lib';
 import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -54,12 +54,13 @@ export const SignUpForm = () => {
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      await authenticationService.register({
+      const response = await authenticationService.register({
         username: data.username,
         email: data.email,
         password: data.password,
       });
-      Cookies.set('username', data.username, { expires: 7 });
+      Cookies.set('token', response, { expires: 7 });
+      dispatch(setToken(response));
       dispatch(setLogin(true));
       router.replace('/home');
     } catch (error) {

@@ -2,8 +2,8 @@
 import AxiosHttpService from './AxiosHttpService';
 
 export interface IAuthenticationService {
-  login(request: AuthenticationRequest): Promise<boolean>;
-  register(request: AuthenticationRequest): Promise<boolean>;
+  login(request: AuthenticationRequest): Promise<string>;
+  register(request: AuthenticationRequest): Promise<string>;
 }
 
 export class AuthenticationService implements IAuthenticationService {
@@ -20,31 +20,27 @@ export class AuthenticationService implements IAuthenticationService {
     return AuthenticationService.instance;
   }
 
-  async login(request: AuthenticationRequest): Promise<boolean> {
-    const response = await this.axiosService.post<
-      AuthenticationResponse,
-      AuthenticationRequest
-    >('/login', request);
-    if (
-      response.username !== request.username ||
-      response.password_hash !== request.password
-    ) {
+  async login(request: AuthenticationRequest): Promise<string> {
+    try {
+      const response = await this.axiosService.post<
+        AuthenticationResponse,
+        AuthenticationRequest
+      >('/login', request);
+      return response.access_token;
+    } catch (error) {
       throw new Error('Invalid username or password');
     }
-    return true;
   }
 
-  async register(request: AuthenticationRequest): Promise<boolean> {
-    const response = await this.axiosService.post<
-      AuthenticationResponse,
-      AuthenticationRequest
-    >('/register', request);
-    if (
-      response.username !== request.username ||
-      response.password_hash !== request.password
-    ) {
-      throw new Error('Invalid username or password');
+  async register(request: AuthenticationRequest): Promise<string> {
+    try {
+      const response = await this.axiosService.post<
+        AuthenticationResponse,
+        AuthenticationRequest
+      >('/register', request);
+      return response.access_token;
+    } catch (error) {
+      throw new Error('Registration failed');
     }
-    return true;
   }
 }

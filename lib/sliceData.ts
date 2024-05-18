@@ -3,14 +3,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface DataState {
   currentQuizzes: Quiz[];
   currentQuizDisplay?: Quiz;
-  isLogin: boolean;
   listSession: QuizSession[];
 }
 
 const initialState: DataState = {
   currentQuizzes: [],
   currentQuizDisplay: undefined,
-  isLogin: false,
   listSession: [
     {
       id: '1',
@@ -115,9 +113,6 @@ const dataSlice = createSlice({
       }
       state.currentQuizDisplay = state.currentQuizzes[action.payload];
     },
-    setLogin(state, action: PayloadAction<boolean>) {
-      state.isLogin = action.payload;
-    },
     setListSession(state, action: PayloadAction<QuizSession[]>) {
       state.listSession = action.payload;
     },
@@ -129,7 +124,6 @@ export const {
   addQuestion,
   removeQuiz,
   setCurrentQuizDisplay,
-  setLogin,
   setListSession,
 } = dataSlice.actions;
 export const dataReducer = dataSlice.reducer;
