@@ -35,7 +35,7 @@ type QuizSession = {
   id: string;
   title: string;
   user_id: string;
-  list_quizzes: Question[];
+  questions: Question[];
 };
 
 type QuizRequest = {

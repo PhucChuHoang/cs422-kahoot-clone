@@ -6,6 +6,7 @@ import {
   setCurrentQuizName,
   setQuestions,
   useAppSelector,
+  useInitSessionAvailable,
 } from '@/lib';
 import { Menu } from 'antd';
 import { useRouter } from 'next/navigation';
@@ -32,8 +33,9 @@ export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  useInitSessionAvailable();
+
   useEffect(() => {
-    //TODO: Initialize the list of sessions
     if (listSession) {
       setHasSession(true);
     }
@@ -62,7 +64,7 @@ export default function Home() {
   const handleEditQuiz = () => {
     if (listSession) {
       const currentQuiz = listSession[parseInt(selectedKey)];
-      dispatch(setQuestions(currentQuiz.list_quizzes));
+      dispatch(setQuestions(currentQuiz.questions));
       dispatch(setCurrentQuestionDisplay(-1));
       dispatch(setCurrentQuizName(currentQuiz.title));
       router.push('/home/quiz');
@@ -133,7 +135,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex-grow overflow-auto">
-              {listSession[parseInt(selectedKey)].list_quizzes.map(
+              {listSession[parseInt(selectedKey)].questions.map(
                 (quiz: Question, index: number) => {
                   return (
                     <div key={index} className="border-b-2 border-gray-200 p-2">

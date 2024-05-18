@@ -6,7 +6,8 @@ export interface IQuizService {
   getQuizzes(id: string, request: QuizRequest): Promise<Question[]>;
   createQuiz(request: QuizRequest): Promise<void>;
   updateQuiz(request: QuizRequest): Promise<void>;
-  deleteQuiz(id: string, request: QuizRequest): Promise<void>;
+  deleteQuiz(id: string): Promise<void>;
+  getAllQuizzes(): Promise<QuizSession[]>;
 }
 
 export class QuizService implements IQuizService {
@@ -54,11 +55,20 @@ export class QuizService implements IQuizService {
     }
   }
 
-  async deleteQuiz(id: string, request: QuizRequest): Promise<void> {
+  async deleteQuiz(id: string): Promise<void> {
     try {
       await this.axiosService.delete<QuizRequest>(`/quiz/${id}`);
     } catch (error) {
       throw new Error('Failed to delete quiz');
+    }
+  }
+
+  async getAllQuizzes(): Promise<QuizSession[]> {
+    try {
+      const response = await this.axiosService.get<QuizSession[]>('/quiz/all');
+      return response;
+    } catch (error) {
+      throw new Error('Failed to fetch quizzes');
     }
   }
 }
