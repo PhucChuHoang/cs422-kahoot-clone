@@ -33,11 +33,7 @@ export const GameMainForm = (socket: { socket: Socket }) => {
       option_id: answers?.[option]?.id,
     });
 
-    if (num < total) {
-      setNum(num + 1);
-    } else {
-      // End the game
-    }
+    setNum(num + 1);
   }
 
   return (

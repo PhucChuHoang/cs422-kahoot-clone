@@ -15,6 +15,12 @@ import {
   useAppSelector,
 } from '@/lib';
 import { usePathname } from 'next/navigation';
+import {
+  AlertDialog,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@radix-ui/react-alert-dialog';
+import { ScorePopup } from '@/components/score_popup';
 
 export default function GamePage() {
   const [gameStart, setGameStart] = useState(false);
@@ -42,6 +48,30 @@ export default function GamePage() {
   }, [socket]);
 
   if (gameStart) {
+    socket?.on(
+      'quiz_end',
+      (data: {
+        message: string;
+        leaderboard: { username: string; score: number }[];
+      }) => {
+        console.log('End game');
+        console.log(data);
+        return (
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button className="border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500">
+                End Game
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogTitle className="bg-yellow-300">
+              <h1>Leaderboard</h1>
+            </AlertDialogTitle>
+            <ScorePopup score={data.leaderboard[0].score} />
+          </AlertDialog>
+        );
+      },
+    );
+
     return (
       <div>
         <div className="flex h-screen w-screen justify-between">
