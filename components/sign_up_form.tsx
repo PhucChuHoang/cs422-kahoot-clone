@@ -16,7 +16,7 @@ import { Button } from './ui/button';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { AuthenticationService } from '@/services/AuthenticationService';
-import { setLogin, setToken, setUsername } from '@/lib';
+import { setLogin, setToken } from '@/lib';
 import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -59,11 +59,9 @@ export const SignUpForm = () => {
         email: data.email,
         password: data.password,
       });
-      Cookies.set('token', response, { expires: 30 });
-      Cookies.set('username', data.username, { expires: 30 });
+      Cookies.set('token', response, { expires: 7 });
       dispatch(setToken(response));
       dispatch(setLogin(true));
-      dispatch(setUsername(data.username));
       router.replace('/home');
     } catch (error) {
       toast.error('Register failed. Please try again.', {

@@ -40,10 +40,8 @@ export const useInitToken = () => {
 
   useEffect(() => {
     const token = Cookies.get('token');
-    const username = Cookies.get('username');
     if (token && !isTokenExpired(token)) {
       dispatch(setToken(token));
-      dispatch(setToken(username));
     }
   });
 };

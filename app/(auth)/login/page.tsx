@@ -9,7 +9,9 @@ export default function SignInPage() {
   const token = useAppSelector((state) => state.user.token);
 
   if (token) {
+    console.log('token', token);
     if (!isTokenExpired(token)) {
+      console.log('redirect to home');
       router.replace('/home');
     }
   }
