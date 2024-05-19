@@ -105,7 +105,7 @@ const QuizAddForm: React.FC = () => {
     setCurrentQuestion({
       text: '',
       options: [
-        { text: '', is_correct: false },
+        { text: '', is_correct: true },
         { text: '', is_correct: false },
       ],
     });
@@ -125,6 +125,15 @@ const QuizAddForm: React.FC = () => {
   const handleDeleteQuiz = (index: number) => (e: React.MouseEvent) => {
     e.preventDefault();
     dispatch(removeQuestion(index));
+
+    // Clear the form
+    setCurrentQuestion({
+      text: '',
+      options: [
+        { text: '', is_correct: true },
+        { text: '', is_correct: false },
+      ],
+    });
   };
 
   return (

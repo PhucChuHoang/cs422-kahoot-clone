@@ -22,7 +22,7 @@ const dataSlice = createSlice({
       state.currentQuestions = action.payload;
     },
     addQuestion(state, action: PayloadAction<Question>) {
-      state.currentQuestions.unshift(action.payload);
+      state.currentQuestions.push(action.payload);
     },
     removeQuestion(state, action: PayloadAction<number>) {
       state.currentQuestions = state.currentQuestions.filter(

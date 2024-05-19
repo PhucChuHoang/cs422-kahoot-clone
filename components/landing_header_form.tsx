@@ -7,11 +7,13 @@ import { Button } from './ui/button';
 import Link from 'next/link';
 import { isTokenExpired } from '@/lib/utils';
 import { useAppSelector } from '@/lib';
+import { useRouter } from 'next/navigation';
 
 export const LandingHeaderForm = () => {
   const token = useAppSelector((state) => state.user.token);
+  const router = useRouter();
 
-  if (isTokenExpired(token)) {
+  if (!token) {
     return (
       <div className="sticky top-0 h-20 w-full border border-white bg-white">
         <div className="container mx-auto h-full px-4">
@@ -33,18 +35,22 @@ export const LandingHeaderForm = () => {
         </div>
       </div>
     );
-  } else {
-    return (
-      <div className="sticky top-0 h-20 w-full border border-white bg-white">
-        <div className="container mx-auto h-full px-4">
-          <div className="flex h-full items-center justify-between">
-            <Logo />
-            <Button className="flex border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500 hover:text-white">
-              Sign Out
-            </Button>
-          </div>
+  }
+
+  if (isTokenExpired(token)) {
+    router.replace('/login');
+  }
+
+  return (
+    <div className="sticky top-0 h-20 w-full border border-white bg-white">
+      <div className="container mx-auto h-full px-4">
+        <div className="flex h-full items-center justify-between">
+          <Logo />
+          <Button className="flex border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500 hover:text-white">
+            Sign Out
+          </Button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 };

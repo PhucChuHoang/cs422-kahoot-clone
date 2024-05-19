@@ -1,20 +1,20 @@
 'use client';
 import { SignInForm } from '@/components/sign_in_form';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { useEffect } from 'react';
 import { isTokenExpired } from '@/lib/utils';
+import { useAppSelector } from '@/lib';
 
 export default function SignInPage() {
   const router = useRouter();
+  const token = useAppSelector((state) => state.user.token);
 
-  useEffect(() => {
-    const token = Cookies.get('token');
-    if (token && !isTokenExpired(token)) {
+  if (token) {
+    console.log('token', token);
+    if (!isTokenExpired(token)) {
+      console.log('redirect to home');
       router.replace('/home');
     }
-    Cookies.remove('token');
-  });
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center">

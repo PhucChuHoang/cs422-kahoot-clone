@@ -19,6 +19,7 @@ export const axiosInstance = axios.create({
 
 export function isTokenExpired(token: string) {
   try {
+    console.log('Token: ', token);
     const decoded = jwtDecode.jwtDecode(token);
     if (decoded.exp) {
       return Date.now() >= decoded.exp * 1000;

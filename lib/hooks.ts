@@ -3,6 +3,9 @@ import { AppDispatch, RootState } from './store';
 import { QuizService } from '@/services/QuizService';
 import { useEffect } from 'react';
 import { setListSession } from './sliceData';
+import Cookies from 'js-cookie';
+import { setToken } from './slice';
+import { isTokenExpired } from './utils';
 
 /**
  * Typed useSelector hook
@@ -30,4 +33,15 @@ export const useInitSessionAvailable = () => {
 
     initSession();
   }, [dispatch, quizService]);
+};
+
+export const useInitToken = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const token = Cookies.get('token');
+    if (token && !isTokenExpired(token)) {
+      dispatch(setToken(token));
+    }
+  });
 };
