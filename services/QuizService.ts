@@ -5,7 +5,7 @@ import AxiosHttpService from './AxiosHttpService';
 export interface IQuizService {
   getQuizzes(id: string, request: QuizRequest): Promise<Question[]>;
   createQuiz(request: QuizRequest): Promise<void>;
-  updateQuiz(request: QuizRequest): Promise<void>;
+  updateQuiz(id: string, request: QuizRequest): Promise<void>;
   deleteQuiz(id: string): Promise<void>;
   getAllQuizzes(): Promise<QuizSession[] | undefined>;
 }
@@ -44,10 +44,10 @@ export class QuizService implements IQuizService {
     }
   }
 
-  async updateQuiz(request: QuizRequest): Promise<void> {
+  async updateQuiz(id: string, request: QuizRequest): Promise<void> {
     try {
       await this.axiosService.put<QuizResponse, QuizRequest>(
-        '/quizzes',
+        `/quiz/${id}`,
         request,
       );
     } catch (error) {

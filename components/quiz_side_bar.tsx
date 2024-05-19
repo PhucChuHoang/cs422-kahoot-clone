@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { useAppSelector, useAppDispatch, setQuestions } from '@/lib';
+import {
+  useAppSelector,
+  useAppDispatch,
+  setQuestions,
+  setIsUpdate,
+} from '@/lib';
 import { Menu } from 'antd';
 import { setCurrentQuestionDisplay } from '@/lib';
 import { Button } from './ui/button';
@@ -14,8 +19,10 @@ export const QuizSideBar = () => {
     (state) => state.data.currentQuestions,
   );
   const currentQuizName = useAppSelector((state) => state.data.currentQuizName);
+  const currentQuizId = useAppSelector((state) => state.data.currentQuizId);
   const router = useRouter();
   const quizService = QuizService.getInstance();
+  const isUpdate = useAppSelector((state) => state.data.isUpdate);
 
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
@@ -25,9 +32,14 @@ export const QuizSideBar = () => {
       questions: currentQuestions,
     };
     try {
-      quizService.createQuiz(request);
+      if (isUpdate) {
+        quizService.updateQuiz(currentQuizId ?? '', request);
+      } else {
+        quizService.createQuiz(request);
+      }
       dispatch(setCurrentQuestionDisplay(-1));
       dispatch(setQuestions([]));
+      dispatch(setIsUpdate(false));
     } catch (error) {
       toast.error('Login failed. Please check your username and password.', {
         position: 'top-center',
@@ -43,7 +55,7 @@ export const QuizSideBar = () => {
         },
       });
     }
-    router.push('/home');
+    router.replace('/home');
   };
 
   const handleMenuClick = (index: number) => {
@@ -61,7 +73,7 @@ export const QuizSideBar = () => {
       <ToastContainer />
       <h1 className="p-2 text-center text-2xl font-bold">{currentQuizName}</h1>
       <Button onClick={handleCreateQuiz} className={'mb-2 w-full font-bold'}>
-        Create Quiz
+        {isUpdate ? 'Update Quiz' : 'Create Quiz'}
       </Button>
       <Button onClick={handleAddQuizClick} className={'w-full font-bold'}>
         Add Question

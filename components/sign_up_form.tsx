@@ -63,7 +63,8 @@ export const SignUpForm = () => {
         email: data.email,
         password: data.password,
       });
-      Cookies.set('token', response, { expires: 7 });
+      Cookies.set('token', response, { expires: 30 });
+      Cookies.set('username', data.username, { expires: 30 });
       dispatch(setToken(response));
       dispatch(setLogin(true));
       router.replace('/home');

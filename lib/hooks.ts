@@ -4,7 +4,7 @@ import { QuizService } from '@/services/QuizService';
 import { useEffect } from 'react';
 import { setListSession } from './sliceData';
 import Cookies from 'js-cookie';
-import { setToken } from './slice';
+import { setToken, setUsername } from './slice';
 import { isTokenExpired } from './utils';
 
 /**
@@ -40,8 +40,10 @@ export const useInitToken = () => {
 
   useEffect(() => {
     const token = Cookies.get('token');
+    const username = Cookies.get('username');
     if (token && !isTokenExpired(token)) {
       dispatch(setToken(token));
+      dispatch(setUsername(username));
     }
   });
 };

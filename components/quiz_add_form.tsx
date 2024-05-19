@@ -6,6 +6,7 @@ import {
   addQuestion,
   removeQuestion,
   setQuestions,
+  setCurrentQuestionDisplay,
 } from '@/lib';
 import { useDispatch } from 'react-redux';
 
@@ -134,6 +135,7 @@ const QuizAddForm: React.FC = () => {
         { text: '', is_correct: false },
       ],
     });
+    dispatch(setCurrentQuestionDisplay(-1));
   };
 
   return (

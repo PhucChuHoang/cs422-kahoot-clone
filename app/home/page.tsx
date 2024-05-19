@@ -2,8 +2,11 @@
 import { Button } from '@/components/ui/button';
 import UserDisplay from '@/components/user_display';
 import {
+  removeQuizSession,
   setCurrentQuestionDisplay,
+  setCurrentQuizId,
   setCurrentQuizName,
+  setIsUpdate,
   setQuestions,
   useAppSelector,
   useInitSessionAvailable,
@@ -24,6 +27,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { isTokenExpired } from '@/lib/utils';
+import { DeleteOutlined } from '@ant-design/icons'; // Import the delete icon
+import { QuizService } from '@/services/QuizService';
 
 export default function Home() {
   const listSession = useAppSelector((state) => state.data.listSession);
@@ -33,6 +38,7 @@ export default function Home() {
   const [hasSession, setHasSession] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const quizService = QuizService.getInstance();
 
   useInitSessionAvailable();
 
@@ -44,6 +50,7 @@ export default function Home() {
 
   useEffect(() => {
     const token = Cookies.get('token');
+    console.log('Page home');
     if (!token || isTokenExpired(token)) {
       Cookies.remove('token');
       router.replace('/login');
@@ -64,12 +71,22 @@ export default function Home() {
 
   const handleEditQuiz = () => {
     if (listSession) {
+      dispatch(setIsUpdate(true));
       const currentQuiz = listSession[parseInt(selectedKey)];
       dispatch(setQuestions(currentQuiz.questions));
       dispatch(setCurrentQuestionDisplay(-1));
       dispatch(setCurrentQuizName(currentQuiz.title));
+      dispatch(setCurrentQuizId(currentQuiz.id));
       router.push('/home/quiz');
     }
+  };
+
+  const handleDeleteQuiz = (index: number, quiz_id: string) => {
+    dispatch(removeQuizSession(index));
+    if (!listSession || listSession.length === 0) {
+      setHasSession(false);
+    }
+    quizService.deleteQuiz(quiz_id);
   };
 
   return (
@@ -84,7 +101,7 @@ export default function Home() {
         <h1 className="pr-2 text-2xl font-bold">List Available Sessions</h1>
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="w-full">Create new quiz</Button>
+            <Button className="w-full font-bold">Create new quiz</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -112,7 +129,22 @@ export default function Home() {
           >
             {listSession.map((session: QuizSession, index: number) => (
               <Menu.Item key={index.toString()} className="font-bold">
-                {session.title}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                  }}
+                >
+                  {session.title}
+                  <DeleteOutlined
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteQuiz(index, session.id);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </div>
               </Menu.Item>
             ))}
           </Menu>

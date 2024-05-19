@@ -13,7 +13,7 @@ export default function QuizPage() {
 
   if (!token || isTokenExpired(token)) {
     dispatch(setToken(undefined));
-    router.push('/login');
+    router.replace('/login');
   }
 
   return (
