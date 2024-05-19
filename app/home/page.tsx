@@ -31,7 +31,6 @@ export default function Home() {
   const [error, setError] = useState('');
   const [selectedKey, setSelectedKey] = useState<string>('0');
   const [hasSession, setHasSession] = useState(false);
-  const username = useAppSelector((state) => state.user.username);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -47,7 +46,6 @@ export default function Home() {
     const token = Cookies.get('token');
     if (!token || isTokenExpired(token)) {
       Cookies.remove('token');
-      Cookies.remove('username');
       router.replace('/login');
     }
   });
@@ -78,7 +76,7 @@ export default function Home() {
     <div className="flex" style={{ height: 'calc(100vh - 80px)' }}>
       <div className="flex w-1/4 items-center justify-center">
         <UserDisplay
-          username={username ?? 'User'}
+          username="username"
           avatarUrl="https://png.pngtree.com/png-clipart/20190614/original/pngtree-teachers-day-teacher-teacher-character-avatar-illustration-educators-png-image_3797974.jpg"
         />
       </div>

@@ -6,10 +6,15 @@ import { useEffect } from 'react';
 import { WatingRoomForm } from '@/components/wating_room_form';
 import { Button } from '@/components/ui/button';
 import { io, Socket } from 'socket.io-client';
+import { useAppSelector } from '@/lib';
+import { usePathname } from 'next/navigation';
 
 export default function GamePage() {
   const [gameStart, setGameStart] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
+
+  const token = useAppSelector((state) => state.user.token);
+  const pathName = usePathname().split('/').pop();
 
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -36,9 +41,22 @@ export default function GamePage() {
     );
   } else {
     if (!socket) {
-      const newSocket = io('http://127.0.0.1:5000');
+      const newSocket = io('http://127.0.0.1:5000', {
+        extraHeaders: {
+          Authorization: `Bearer ` + token,
+        },
+      });
       setSocket(newSocket);
     }
+
+    socket?.on('connect', () => {
+      console.log('connected');
+      socket.emit('join_session', { session_code: pathName });
+    });
+
+    socket?.on('session_update', (data: { players: string[] }) => {
+      console.log(data);
+    });
 
     return (
       <div className="flex flex-col gap-y-10">
