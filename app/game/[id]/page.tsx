@@ -15,15 +15,12 @@ import {
   useAppSelector,
 } from '@/lib';
 import { usePathname } from 'next/navigation';
-import {
-  AlertDialog,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@radix-ui/react-alert-dialog';
-import { ScorePopup } from '@/components/score_popup';
 
 export default function GamePage() {
   const [gameStart, setGameStart] = useState(false);
+  const [gameEnd, setGameEnd] = useState<
+    null | { username: string; score: number }[]
+  >(null);
   const [socket, setSocket] = useState<Socket | null>(null);
   const dispatch = useAppDispatch();
 
@@ -56,19 +53,8 @@ export default function GamePage() {
       }) => {
         console.log('End game');
         console.log(data);
-        return (
-          <AlertDialog>
-            <AlertDialogTrigger>
-              <Button className="border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500">
-                End Game
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogTitle className="bg-yellow-300">
-              <h1>Leaderboard</h1>
-            </AlertDialogTitle>
-            <ScorePopup score={data.leaderboard[0].score} />
-          </AlertDialog>
-        );
+        setGameEnd(data.leaderboard);
+        setGameStart(false);
       },
     );
 
@@ -136,22 +122,42 @@ export default function GamePage() {
 
     return (
       <div className="flex flex-col gap-y-10">
-        <div>
-          <WatingRoomForm />
-        </div>
+        {gameEnd == null && (
+          <div>
+            <WatingRoomForm />
+          </div>
+        )}
 
-        <div className="flex h-full w-full justify-center">
-          {username == host && (
-            <Button
-              onClick={() => {
-                socket?.emit('start_quiz', { session_code: pathName });
-              }}
-              className="border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500 "
-            >
-              Start Game
-            </Button>
-          )}
-        </div>
+        {gameEnd == null && (
+          <div className="flex h-full w-full justify-center">
+            {username == host && (
+              <Button
+                onClick={() => {
+                  socket?.emit('start_quiz', { session_code: pathName });
+                }}
+                className="border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500 "
+              >
+                Start Game
+              </Button>
+            )}
+          </div>
+        )}
+
+        {gameEnd && (
+          <div className="flex h-full w-full justify-center">
+            <div className="flex flex-col gap-y-5">
+              <h1 className="text-4xl font-bold">Leaderboard</h1>
+              {gameEnd.map((player, index) => {
+                return (
+                  <div key={index} className="flex w-full justify-between">
+                    <h1>{player.username}</h1>
+                    <h1>{player.score}</h1>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
