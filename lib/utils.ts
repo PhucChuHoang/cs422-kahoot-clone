@@ -12,9 +12,14 @@ const API_BASE_URL: string = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
 export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    Authorization: `Bearer ${Cookies.get('token')}`,
-  },
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export function isTokenExpired(token: string) {
