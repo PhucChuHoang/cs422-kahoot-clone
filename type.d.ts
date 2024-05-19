@@ -39,11 +39,13 @@ type QuizSession = {
 };
 
 type QuizRequest = {
+  quiz_id?: string;
   title?: string;
   questions?: Question[];
 };
 
 type QuizResponse = {
+  session_code?: string;
   id: string;
   user_id: string;
   title: string;

@@ -8,6 +8,7 @@ export interface IQuizService {
   updateQuiz(id: string, request: QuizRequest): Promise<void>;
   deleteQuiz(id: string): Promise<void>;
   getAllQuizzes(): Promise<QuizSession[] | undefined>;
+  createSession(id: string): Promise<string>;
 }
 
 export class QuizService implements IQuizService {
@@ -72,6 +73,18 @@ export class QuizService implements IQuizService {
       return response;
     } catch (error) {
       throw new Error('Failed to fetch quizzes');
+    }
+  }
+
+  async createSession(id: string): Promise<string> {
+    try {
+      const response = await this.axiosService.post<QuizResponse, QuizRequest>(
+        '/create/session',
+        { quiz_id: id },
+      );
+      return response.session_code ?? '';
+    } catch (error) {
+      throw new Error('Failed to create session');
     }
   }
 }

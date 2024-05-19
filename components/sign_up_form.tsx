@@ -67,6 +67,7 @@ export const SignUpForm = () => {
       Cookies.set('username', data.username, { expires: 30 });
       dispatch(setToken(response));
       dispatch(setLogin(true));
+      dispatch(setUsername(data.username));
       router.replace('/home');
     } catch (error) {
       toast.error('Register failed. Please try again.', {
