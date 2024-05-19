@@ -29,7 +29,6 @@ import { Input } from '@/components/ui/input';
 import { isTokenExpired } from '@/lib/utils';
 import { DeleteOutlined } from '@ant-design/icons'; // Import the delete icon
 import { QuizService } from '@/services/QuizService';
-import { QuizGameService } from '@/services/QuizGameServices';
 
 export default function Home() {
   const listSession = useAppSelector((state) => state.data.listSession);
@@ -41,9 +40,6 @@ export default function Home() {
   const dispatch = useDispatch();
   const quizService = QuizService.getInstance();
   const username = useAppSelector((state) => state.user.username);
-  const quizGameService = QuizGameService.getInstance();
-  const token = useAppSelector((state) => state.user.token);
-
   useInitSessionAvailable();
 
   useEffect(() => {
@@ -98,10 +94,10 @@ export default function Home() {
       const currentQuizId = listSession[parseInt(selectedKey)].id;
       try {
         const sessionCode = await quizService.createSession(currentQuizId);
-        await quizGameService.connect({
-          session_code: sessionCode,
-          access_token: token ?? '',
-        });
+        // await quizGameService.connect({
+        //   session_code: sessionCode,
+        //   access_token: token ?? '',
+        // });
         router.replace(`/game/${sessionCode}`);
       } catch (error) {
         setError('Failed to start quiz');

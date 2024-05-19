@@ -10,6 +10,7 @@ import {
   setCurrentPlayerList,
   setGameQuestion,
   setHost,
+  setTotalQuestions,
   useAppDispatch,
   useAppSelector,
 } from '@/lib';
@@ -22,7 +23,6 @@ export default function GamePage() {
 
   const username = useAppSelector((state) => state.user.username);
   const host = useAppSelector((state) => state.game.currentHost);
-  console.log(username);
   const token = useAppSelector((state) => state.user.token);
   const pathName = usePathname().split('/').pop();
 
@@ -45,7 +45,7 @@ export default function GamePage() {
     return (
       <div>
         <div className="flex h-screen w-screen justify-between">
-          <GameMainForm />
+          {socket && <GameMainForm socket={socket} />}
         </div>
       </div>
     );
@@ -60,14 +60,12 @@ export default function GamePage() {
     }
 
     socket?.on('connect', () => {
-      console.log('connected');
       socket.emit('join_session', { session_code: pathName });
     });
 
     socket?.on(
       'session_update',
       (data: { message: string; host: string; participants: string[] }) => {
-        console.log(data);
         const new_players = data.participants;
         dispatch(setHost(data.host));
         dispatch(setCurrentPlayerList(new_players));
@@ -79,16 +77,17 @@ export default function GamePage() {
       (data: {
         question_id: number;
         question_text: string;
+        total: number;
         options: { id: number; text: string; is_correct: boolean }[];
       }) => {
         if (!gameStart) {
           setGameStart(true);
         }
-        console.log(data);
+        dispatch(setTotalQuestions(data.total));
         const questionOptions = data.options.map((option) => {
           return {
             id: option.id.toString(),
-            question_id: option.id.toString(),
+            question_id: data.question_id.toString(),
             text: option.text,
             is_correct: option.is_correct,
           };

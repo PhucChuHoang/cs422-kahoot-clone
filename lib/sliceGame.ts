@@ -4,12 +4,14 @@ interface GameState {
   currentHost: string;
   currentQuestions: Question[];
   currentQuestion: Question | null;
+  totalQuestions: number;
 }
 
 const initialState: GameState = {
   currentHost: '',
   currentQuestions: [],
   currentQuestion: null,
+  totalQuestions: 0,
 };
 
 const gameSlice = createSlice({
@@ -21,6 +23,9 @@ const gameSlice = createSlice({
     },
     setGameQuestions(state, action: PayloadAction<Question[]>) {
       state.currentQuestions = action.payload;
+    },
+    setTotalQuestions(state, action: PayloadAction<number>) {
+      state.totalQuestions = action.payload;
     },
     setGameQuestion(state, action: PayloadAction<Question>) {
       state.currentQuestion = action.payload;
@@ -42,5 +47,6 @@ export const {
   addGameQuestion,
   removeGameQuestion,
   setHost,
+  setTotalQuestions,
 } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;
