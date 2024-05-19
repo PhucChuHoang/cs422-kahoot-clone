@@ -25,7 +25,7 @@ export const useInitSessionAvailable = () => {
     const initSession = async () => {
       try {
         const sessions = await quizService.getAllQuizzes();
-        dispatch(setListSession(sessions));
+        dispatch(setListSession(sessions ?? undefined));
       } catch (error) {
         console.error(error);
       }

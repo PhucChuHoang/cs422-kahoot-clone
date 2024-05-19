@@ -25,6 +25,7 @@ axiosInstance.interceptors.request.use((config) => {
 export function isTokenExpired(token: string) {
   try {
     console.log('Token: ', token);
+    if (!token) return true;
     const decoded = jwtDecode.jwtDecode(token);
     if (decoded.exp) {
       return Date.now() >= decoded.exp * 1000;

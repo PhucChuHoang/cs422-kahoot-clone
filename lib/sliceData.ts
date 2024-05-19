@@ -41,7 +41,7 @@ const dataSlice = createSlice({
       }
       state.currentQuestionDisplay = state.currentQuestions[action.payload];
     },
-    setListSession(state, action: PayloadAction<QuizSession[]>) {
+    setListSession(state, action: PayloadAction<QuizSession[] | undefined>) {
       state.listSession = action.payload;
     },
     setCurrentQuizName(state, action: PayloadAction<string>) {

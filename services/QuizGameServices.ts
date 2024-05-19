@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import AxiosHttpService from './AxiosHttpService';
 
 export interface IQuizGameServices {

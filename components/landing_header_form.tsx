@@ -5,7 +5,6 @@ import { Logo } from './ui/logo';
 import { Button } from './ui/button';
 
 import Link from 'next/link';
-import { isTokenExpired } from '@/lib/utils';
 import { setToken, setUsername, useAppDispatch, useAppSelector } from '@/lib';
 import { useRouter } from 'next/navigation';
 
@@ -42,10 +41,6 @@ export const LandingHeaderForm = () => {
         </div>
       </div>
     );
-  }
-
-  if (isTokenExpired(token)) {
-    router.replace('/login');
   }
 
   return (

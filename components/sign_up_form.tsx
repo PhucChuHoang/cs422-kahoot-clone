@@ -54,6 +54,10 @@ export const SignUpForm = () => {
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
+      dispatch(setToken(undefined));
+      dispatch(setUsername(undefined));
+      Cookies.remove('token');
+      Cookies.remove('username');
       const response = await authenticationService.register({
         username: data.username,
         email: data.email,
