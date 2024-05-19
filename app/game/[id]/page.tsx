@@ -6,16 +6,22 @@ import { useEffect } from 'react';
 import { WatingRoomForm } from '@/components/wating_room_form';
 import { Button } from '@/components/ui/button';
 import { io, Socket } from 'socket.io-client';
-import { setCurrentPlayerList, useAppDispatch, useAppSelector } from '@/lib';
+import {
+  setCurrentPlayerList,
+  setGameQuestion,
+  setHost,
+  useAppDispatch,
+  useAppSelector,
+} from '@/lib';
 import { usePathname } from 'next/navigation';
 
 export default function GamePage() {
   const [gameStart, setGameStart] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
   const dispatch = useAppDispatch();
-  const [host, setHost] = useState<string>('');
 
   const username = useAppSelector((state) => state.user.username);
+  const host = useAppSelector((state) => state.game.currentHost);
   console.log(username);
   const token = useAppSelector((state) => state.user.token);
   const pathName = usePathname().split('/').pop();
@@ -63,8 +69,39 @@ export default function GamePage() {
       (data: { message: string; host: string; participants: string[] }) => {
         console.log(data);
         const new_players = data.participants;
-        setHost(data.host);
+        dispatch(setHost(data.host));
         dispatch(setCurrentPlayerList(new_players));
+      },
+    );
+
+    socket?.on(
+      'next_question',
+      (data: {
+        question_id: number;
+        question_text: string;
+        options: { id: number; text: string; is_correct: boolean }[];
+      }) => {
+        if (!gameStart) {
+          setGameStart(true);
+        }
+        console.log(data);
+        const questionOptions = data.options.map((option) => {
+          return {
+            id: option.id.toString(),
+            question_id: option.id.toString(),
+            text: option.text,
+            is_correct: option.is_correct,
+          };
+        });
+
+        dispatch(
+          setGameQuestion({
+            id: data.question_id.toString(),
+            quiz_id: data.question_id.toString(),
+            text: data.question_text,
+            options: questionOptions,
+          }),
+        );
       },
     );
 
@@ -77,7 +114,9 @@ export default function GamePage() {
         <div className="flex h-full w-full justify-center">
           {username == host && (
             <Button
-              onClick={() => setGameStart(true)}
+              onClick={() => {
+                socket?.emit('start_quiz', { session_code: pathName });
+              }}
               className="border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500 "
             >
               Start Game
