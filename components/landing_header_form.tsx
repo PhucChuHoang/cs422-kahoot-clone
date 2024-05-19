@@ -6,12 +6,19 @@ import { Button } from './ui/button';
 
 import Link from 'next/link';
 import { isTokenExpired } from '@/lib/utils';
-import { useAppSelector } from '@/lib';
+import { setToken, setUsername, useAppDispatch, useAppSelector } from '@/lib';
 import { useRouter } from 'next/navigation';
 
 export const LandingHeaderForm = () => {
   const token = useAppSelector((state) => state.user.token);
   const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const handleSignOut = () => {
+    dispatch(setToken(undefined));
+    dispatch(setUsername(undefined));
+    router.replace('/login');
+  };
 
   if (!token) {
     return (
@@ -46,7 +53,10 @@ export const LandingHeaderForm = () => {
       <div className="container mx-auto h-full px-4">
         <div className="flex h-full items-center justify-between">
           <Logo />
-          <Button className="flex border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500 hover:text-white">
+          <Button
+            className="flex border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500 hover:text-white"
+            onClick={handleSignOut}
+          >
             Sign Out
           </Button>
         </div>

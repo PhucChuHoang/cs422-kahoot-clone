@@ -29,6 +29,11 @@ const dataSlice = createSlice({
         (_, index) => index !== action.payload,
       );
     },
+    removeQuizSession(state, action: PayloadAction<number>) {
+      state.listSession = state.listSession?.filter(
+        (_, index) => index !== action.payload,
+      );
+    },
     setCurrentQuestionDisplay(state, action: PayloadAction<number>) {
       if (action.payload === -1) {
         state.currentQuestionDisplay = undefined;
@@ -49,6 +54,7 @@ export const {
   setQuestions,
   addQuestion,
   removeQuestion,
+  removeQuizSession,
   setCurrentQuestionDisplay,
   setListSession,
   setCurrentQuizName,

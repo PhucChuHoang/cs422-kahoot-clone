@@ -27,7 +27,7 @@ type AuthenticationRequest = {
 };
 
 type AuthenticationResponse = {
-  status: number;
+  user_id: string;
   access_token: string;
 };
 
@@ -71,4 +71,4 @@ type QuizGameSessionAnswerResponse = {
   question: string;
   answers: string[];
   correct_answer: string;
-}
+};
