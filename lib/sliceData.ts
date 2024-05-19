@@ -4,6 +4,7 @@ interface DataState {
   currentQuestions: Question[];
   currentQuestionDisplay?: Question;
   currentQuizName?: string;
+  currentPlayerList?: string[];
   listSession?: QuizSession[];
   isUpdate: boolean;
   currentQuizId?: string;
@@ -16,6 +17,7 @@ const initialState: DataState = {
   listSession: undefined,
   isUpdate: false,
   currentQuizId: undefined,
+  currentPlayerList: [],
 };
 
 const dataSlice = createSlice({
@@ -57,6 +59,9 @@ const dataSlice = createSlice({
     setCurrentQuizId(state, action: PayloadAction<string>) {
       state.currentQuizId = action.payload;
     },
+    setCurrentPlayerList(state, action: PayloadAction<string[]>) {
+      state.currentPlayerList = action.payload;
+    },
   },
 });
 
@@ -70,5 +75,6 @@ export const {
   removeQuizSession,
   setIsUpdate,
   setCurrentQuizId,
+  setCurrentPlayerList,
 } = dataSlice.actions;
 export const dataReducer = dataSlice.reducer;

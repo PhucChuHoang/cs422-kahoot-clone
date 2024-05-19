@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { usePathname } from 'next/navigation';
-import { Button } from './ui/button';
+import { useAppSelector } from '@/lib';
 
 function ShowPlayers({ players }: { players: string[] }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -32,13 +32,7 @@ function ShowPlayers({ players }: { players: string[] }) {
 }
 
 export const WatingRoomForm = () => {
-  const [players, setPlayers] = useState<string[]>([
-    'Kiin',
-    'Khan',
-    'Bdd',
-    'Ruler',
-  ]);
-
+  const players = useAppSelector((state) => state.data.currentPlayerList);
   const pathName = usePathname();
 
   return (
@@ -56,17 +50,10 @@ export const WatingRoomForm = () => {
 
       <div className="flex flex-col justify-center text-xl">
         <h1>Wating for player...</h1>
-        <h1>Total player: {players.length}</h1>
+        <h1>Total player: {players?.length}</h1>
       </div>
 
-      <ShowPlayers players={players} />
-
-      <Button
-        onClick={() => setPlayers([...players, 'Faker'])}
-        className="flex border-2 border-primary bg-transparent font-bold text-primary hover:bg-yellow-500"
-      >
-        Add player
-      </Button>
+      <ShowPlayers players={players ?? []} />
     </div>
   );
 };
