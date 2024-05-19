@@ -29,6 +29,7 @@ import { Input } from '@/components/ui/input';
 import { isTokenExpired } from '@/lib/utils';
 import { DeleteOutlined } from '@ant-design/icons'; // Import the delete icon
 import { QuizService } from '@/services/QuizService';
+import { QuizGameService } from '@/services/QuizGameServices';
 
 export default function Home() {
   const listSession = useAppSelector((state) => state.data.listSession);
@@ -39,6 +40,9 @@ export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
   const quizService = QuizService.getInstance();
+  const username = useAppSelector((state) => state.user.username);
+  const quizGameService = QuizGameService.getInstance();
+  const token = useAppSelector((state) => state.user.token);
 
   useInitSessionAvailable();
 
@@ -89,11 +93,29 @@ export default function Home() {
     quizService.deleteQuiz(quiz_id);
   };
 
+  const handleStartQuiz = async () => {
+    if (listSession) {
+      const currentQuizId = listSession[parseInt(selectedKey)].id;
+      try {
+        const sessionCode = await quizService.createSession(currentQuizId);
+        await quizGameService.connect({
+          session_code: sessionCode,
+          access_token: token ?? '',
+        });
+        router.replace(`/game/${sessionCode}`);
+      } catch (error) {
+        setError('Failed to start quiz');
+      } finally {
+        setError('');
+      }
+    }
+  };
+
   return (
     <div className="flex" style={{ height: 'calc(100vh - 80px)' }}>
       <div className="flex w-1/4 items-center justify-center">
         <UserDisplay
-          username="username"
+          username={username || 'User'}
           avatarUrl="https://png.pngtree.com/png-clipart/20190614/original/pngtree-teachers-day-teacher-teacher-character-avatar-illustration-educators-png-image_3797974.jpg"
         />
       </div>
@@ -164,7 +186,9 @@ export default function Home() {
                 >
                   Edit Quiz
                 </Button>
-                <Button className="mr-2">Start Quiz</Button>
+                <Button className="mr-2" onClick={handleStartQuiz}>
+                  Start Quiz
+                </Button>
               </div>
             </div>
             <div className="flex-grow overflow-auto">
