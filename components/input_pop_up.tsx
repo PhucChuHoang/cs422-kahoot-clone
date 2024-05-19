@@ -35,7 +35,7 @@ export const InputPopup = (placeholder: { name: string; roomID: string }) => {
             try {
               const response = await quizGameService.connect({
                 session_code: currentRoomID,
-                access_token: token,
+                access_token: token ?? '',
               });
 
               if (response == 'Joined session successfully') {
