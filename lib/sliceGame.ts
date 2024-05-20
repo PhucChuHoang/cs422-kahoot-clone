@@ -6,6 +6,7 @@ interface GameState {
   currentQuestion: Question | null;
   totalQuestions: number;
   hasAnswer?: boolean;
+  time?: number;
 }
 
 const initialState: GameState = {
@@ -14,6 +15,7 @@ const initialState: GameState = {
   currentQuestion: null,
   totalQuestions: 0,
   hasAnswer: false,
+  time: 30,
 };
 
 const gameSlice = createSlice({
@@ -22,6 +24,9 @@ const gameSlice = createSlice({
   reducers: {
     setHost(state, action: PayloadAction<string>) {
       state.currentHost = action.payload;
+    },
+    setTime(state, action: PayloadAction<number>) {
+      state.time = action.payload;
     },
     setGameQuestions(state, action: PayloadAction<Question[]>) {
       state.currentQuestions = action.payload;
@@ -54,5 +59,6 @@ export const {
   setHost,
   setTotalQuestions,
   setHasAnswer,
+  setTime,
 } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;

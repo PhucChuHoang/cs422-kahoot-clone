@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Progress } from './ui/progress';
 import { Button } from './ui/button';
-import { setHasAnswer, useAppDispatch, useAppSelector } from '@/lib';
+import { setHasAnswer, setTime, useAppDispatch, useAppSelector } from '@/lib';
 import { Socket } from 'socket.io-client';
 import { usePathname } from 'next/navigation';
 
@@ -24,6 +24,38 @@ export const GameMainForm = (socket: { socket: Socket }) => {
     (state) => state.game.currentQuestion?.options,
   );
 
+  //Timer
+  const time = useAppSelector((state) => state.game.time);
+  const startTimeRef = useRef(0);
+  const intervalRef = useRef<null | NodeJS.Timeout>(null);
+  const [running, setRunning] = useState(true);
+
+  if ((time ?? 30) >= 30) {
+    startTimeRef.current = Date.now();
+  }
+  const startStopwatch = () => {
+    intervalRef.current = setInterval(() => {
+      dispatch(
+        setTime(
+          Math.max(
+            30 - Math.floor((Date.now() - startTimeRef.current) / 1000),
+            0,
+          ),
+        ),
+      );
+    }, 1000);
+    setRunning(true);
+  };
+
+  useEffect(() => {
+    if (running) {
+      startStopwatch();
+    }
+    return () => {
+      clearInterval(intervalRef.current ?? 0);
+    };
+  }, [running]);
+
   async function onSubmit(option: number) {
     if (!hasAnswer) {
       if (answers?.[option]?.is_correct) {
@@ -40,14 +72,24 @@ export const GameMainForm = (socket: { socket: Socket }) => {
     }
   }
 
+  if ((time ?? 30) <= 0) {
+    onSubmit(1);
+  }
+
   return (
     <div className="h-full w-full space-y-10">
       <Progress value={(num / total) * 100} />
 
-      <div className="flex w-auto items-center justify-center">
+      <div className="flex w-auto items-center justify-center gap-x-10">
         <Card>
           <CardHeader className="items-center">
             <h1 className="font-bold">Score: {currentPoint} </h1>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader className="items-center">
+            <h1 className="font-bold">Remaining: {time}s</h1>
           </CardHeader>
         </Card>
       </div>
