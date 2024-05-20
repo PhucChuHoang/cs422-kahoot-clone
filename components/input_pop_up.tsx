@@ -22,7 +22,7 @@ export const InputPopup = (placeholder: { name: string; roomID: string }) => {
       </popup.AlertDialogHeader>
       <popup.AlertDialogDescription className="flex flex-col justify-center gap-y-5">
         <input
-          className="border border-black text-center"
+          className="h-10 border border-black text-center text-lg text-black"
           type="text"
           placeholder={placeholder.roomID}
           onChange={(e) => setCurrentRoomID(e.target.value)}

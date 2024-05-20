@@ -44,7 +44,7 @@ export default function GamePage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [socket]);
+  }, [pathName, socket]);
 
   if (gameStart) {
     socket?.on(

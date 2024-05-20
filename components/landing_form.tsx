@@ -6,8 +6,13 @@ import Image from 'next/image';
 import { Button } from './ui/button';
 import { AlertDialog, AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
 import { InputPopup } from './input_pop_up';
+import { useRouter } from 'next/navigation';
+import { useAppSelector } from '@/lib';
 
 export const LandingForm = () => {
+  const router = useRouter();
+  const token = useAppSelector((state) => state.user.token);
+
   return (
     <div className="margin mx-10 flex flex-row items-center justify-between">
       <div className="w-50 relative left-10 flex h-full flex-col items-start">
@@ -26,7 +31,14 @@ export const LandingForm = () => {
         <div className="relative left-12">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button className="bg-yellow-400 shadow-sm shadow-yellow-100 hover:bg-yellow-500">
+              <Button
+                className="bg-yellow-400 shadow-sm shadow-yellow-100 hover:bg-yellow-500"
+                onClick={() => {
+                  if (!token) {
+                    router.push('/login');
+                  }
+                }}
+              >
                 Start game
               </Button>
             </AlertDialogTrigger>
