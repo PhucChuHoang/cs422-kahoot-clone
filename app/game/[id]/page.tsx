@@ -11,6 +11,7 @@ import {
   setGameQuestion,
   setHasAnswer,
   setHost,
+  setTime,
   setTotalQuestions,
   useAppDispatch,
   useAppSelector,
@@ -101,6 +102,7 @@ export default function GamePage() {
         if (!gameStart) {
           setGameStart(true);
         }
+        dispatch(setTime(30));
         dispatch(setHasAnswer(false));
         dispatch(setTotalQuestions(data.total));
         const questionOptions = data.options.map((option) => {
