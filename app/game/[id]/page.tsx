@@ -9,12 +9,14 @@ import { io, Socket } from 'socket.io-client';
 import {
   setCurrentPlayerList,
   setGameQuestion,
+  setHasAnswer,
   setHost,
   setTotalQuestions,
   useAppDispatch,
   useAppSelector,
 } from '@/lib';
 import { usePathname } from 'next/navigation';
+import { Table, TableHeader } from '@/components/ui/table';
 
 export default function GamePage() {
   const [gameStart, setGameStart] = useState(false);
@@ -51,10 +53,10 @@ export default function GamePage() {
         message: string;
         leaderboard: { username: string; score: number }[];
       }) => {
-        console.log('End game');
-        console.log(data);
         setGameEnd(data.leaderboard);
         setGameStart(false);
+        socket?.emit('quiz_session', { session_code: pathName });
+        setSocket(null);
       },
     );
 
@@ -99,6 +101,7 @@ export default function GamePage() {
         if (!gameStart) {
           setGameStart(true);
         }
+        dispatch(setHasAnswer(false));
         dispatch(setTotalQuestions(data.total));
         const questionOptions = data.options.map((option) => {
           return {
@@ -144,17 +147,33 @@ export default function GamePage() {
         )}
 
         {gameEnd && (
-          <div className="flex h-full w-full justify-center">
+          <div className="flex h-full w-full flex-col gap-y-10">
+            <div className="w-full items-center gap-y-10 text-xl">
+              <h1 className="text-center text-4xl font-bold">Leaderboard</h1>
+            </div>
             <div className="flex flex-col gap-y-5">
-              <h1 className="text-4xl font-bold">Leaderboard</h1>
-              {gameEnd.map((player, index) => {
-                return (
-                  <div key={index} className="flex w-full justify-between">
-                    <h1>{player.username}</h1>
-                    <h1>{player.score}</h1>
-                  </div>
-                );
-              })}
+              <Table aria-label="Example table with dynamic content">
+                <TableHeader>
+                  <tr className="text-2xl">
+                    <th>Name</th>
+                    <th>Score</th>
+                  </tr>
+                </TableHeader>
+
+                {/* Show table item in the center */}
+                <tbody className="text-center text-xl font-bold">
+                  {gameEnd.map((player) => (
+                    <tr key={player.username}>
+                      <td className="border-2 border-black bg-yellow-300">
+                        {player.username}
+                      </td>
+                      <td className="border-2 border-black bg-yellow-200">
+                        {player.score}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             </div>
           </div>
         )}
