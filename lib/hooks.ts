@@ -20,6 +20,7 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useInitSessionAvailable = () => {
   const dispatch = useAppDispatch();
   const quizService = QuizService.getInstance();
+  const pageKey = useAppSelector((state) => state.data.pageKey);
 
   useEffect(() => {
     const initSession = async () => {
@@ -32,7 +33,7 @@ export const useInitSessionAvailable = () => {
     };
 
     initSession();
-  }, [dispatch, quizService]);
+  }, [dispatch, quizService, pageKey]);
 };
 
 export const useInitToken = () => {

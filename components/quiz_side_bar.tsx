@@ -4,6 +4,7 @@ import {
   useAppDispatch,
   setQuestions,
   setIsUpdate,
+  setPageKey,
 } from '@/lib';
 import { Menu } from 'antd';
 import { setCurrentQuestionDisplay } from '@/lib';
@@ -40,6 +41,7 @@ export const QuizSideBar = () => {
       dispatch(setCurrentQuestionDisplay(-1));
       dispatch(setQuestions([]));
       dispatch(setIsUpdate(false));
+      dispatch(setPageKey(Date.now().toString())); // Convert the number to a string
     } catch (error) {
       toast.error('Login failed. Please check your username and password.', {
         position: 'top-center',

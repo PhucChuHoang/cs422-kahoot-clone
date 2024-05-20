@@ -8,6 +8,7 @@ interface DataState {
   listSession?: QuizSession[];
   isUpdate: boolean;
   currentQuizId?: string;
+  pageKey?: string;
 }
 
 const initialState: DataState = {
@@ -18,6 +19,7 @@ const initialState: DataState = {
   isUpdate: false,
   currentQuizId: undefined,
   currentPlayerList: [],
+  pageKey: undefined,
 };
 
 const dataSlice = createSlice({
@@ -62,6 +64,9 @@ const dataSlice = createSlice({
     setCurrentPlayerList(state, action: PayloadAction<string[]>) {
       state.currentPlayerList = action.payload;
     },
+    setPageKey(state, action: PayloadAction<string>) {
+      state.pageKey = action.payload;
+    },
   },
 });
 
@@ -76,5 +81,6 @@ export const {
   setIsUpdate,
   setCurrentQuizId,
   setCurrentPlayerList,
+  setPageKey,
 } = dataSlice.actions;
 export const dataReducer = dataSlice.reducer;
